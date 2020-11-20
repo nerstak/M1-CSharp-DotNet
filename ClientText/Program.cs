@@ -6,7 +6,8 @@ namespace ClientText
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Client client = new Client("127.0.0.1", 8976);
+            client.Start();
         }
     }
 }
