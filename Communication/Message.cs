@@ -1,4 +1,4 @@
-﻿namespace Communication
+﻿﻿namespace Communication
 {
     public interface Message
     {
