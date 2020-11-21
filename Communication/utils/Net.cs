@@ -5,22 +5,23 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using Communication.model;
 
 namespace Communication
 {
     
     public class Net
     {
-        public static void sendMsg(Stream s, Message msg)
+        public static void sendMsg(Stream s, CustomPacket pck)
         {
             BinaryFormatter bf = new BinaryFormatter();
-            bf.Serialize(s, msg);
+            bf.Serialize(s, pck);
         }
 
-        public static Message rcvMsg(Stream s)
+        public static CustomPacket rcvMsg(Stream s)
         {
             BinaryFormatter bf = new BinaryFormatter();
-            return (Message)bf.Deserialize(s);
+            return (CustomPacket)bf.Deserialize(s);
         }
     }
 }
