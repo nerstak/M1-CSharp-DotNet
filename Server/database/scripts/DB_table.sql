@@ -1,4 +1,4 @@
--- You need to be connected to st2eedb to execute this part
+-- You need to be connected to csharp_db to execute this part
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TABLE users
