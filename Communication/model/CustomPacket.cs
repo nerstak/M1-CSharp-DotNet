@@ -2,17 +2,27 @@
 
 namespace Communication.model
 {
-    public interface CustomPacket
+    [Serializable]
+    public class CustomPacket
     {
-        Operation OperationOrder
+        private Operation operation;
+        private DataPacket data;
+        
+        public Operation OperationOrder
         {
             get;
         }
 
-        DataPacket Data
+        public DataPacket Data
         {
             get;
             set;
+        }
+
+        public CustomPacket(Operation operationOrder, DataPacket data)
+        {
+            OperationOrder = operationOrder;
+            Data = data;
         }
     }
 }

@@ -16,6 +16,7 @@ namespace Communication.model
 
         public string Password
         {
+            get => password;
             set => password = value;
         }
 
