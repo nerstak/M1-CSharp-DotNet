@@ -1,1 +1,0 @@
-CREATE USER adm WITH PASSWORD 'adm';
