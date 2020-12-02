@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿
 namespace Server
 {
     class Program
