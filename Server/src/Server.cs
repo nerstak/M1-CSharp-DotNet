@@ -10,11 +10,17 @@ namespace Server
     {
         private int port;
         private static ConnectedUsersTopic usersList;
+        /// <summary>
+        /// Semaphore for list access
+        /// </summary>
+        private static Semaphore semaphoreList = new Semaphore(1, 1);
 
         public static ConnectedUsersTopic UsersList
         {
             get => usersList;
         }
+
+        public static Semaphore SemaphoreList => semaphoreList;
 
         public Server(int port)
         {

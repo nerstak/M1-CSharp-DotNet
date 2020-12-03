@@ -24,6 +24,7 @@ namespace ClientText.view
 
         private void MainLoop()
         {
+            UserCreation();
             UserConnection();
         }
 
@@ -40,12 +41,8 @@ namespace ClientText.view
 
                 string message;
                 flag = userAction.ConnectUser(username, password, out message);
-                if (!flag)
-                {
-                    Console.Out.WriteLine(message);
-                }
+                Console.Out.WriteLine(message);
             } while (!flag);
-            Console.Out.WriteLine("You have been connected!");
         }
 
         private void UserCreation()
@@ -60,13 +57,8 @@ namespace ClientText.view
                 var password = Console.ReadLine();
 
                 flag = userAction.CreateUser(username, password, out var message);
-                if (!flag)
-                {
-                    Console.Out.WriteLine(message);
-                }
+                Console.Out.WriteLine(message);
             } while (!flag);
-            Console.Out.WriteLine("You have been connected!");
-            
         }
     }
 }
