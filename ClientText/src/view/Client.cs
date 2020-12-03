@@ -30,6 +30,7 @@ namespace ClientText.view
         private void UserConnection()
         {
             bool flag = false;
+            UserAction userAction = new UserAction();
             do
             {
                 Console.Out.WriteLine("Username: ");
@@ -37,13 +38,35 @@ namespace ClientText.view
                 Console.Out.WriteLine("Password: ");
                 var password = Console.ReadLine();
 
-                flag = Login.ConnectUser(username, password);
+                string message;
+                flag = userAction.ConnectUser(username, password, out message);
                 if (!flag)
                 {
-                    Console.Out.WriteLine("Wrong credentials");
+                    Console.Out.WriteLine(message);
                 }
             } while (!flag);
             Console.Out.WriteLine("You have been connected!");
+        }
+
+        private void UserCreation()
+        {
+            bool flag = false;
+            UserAction userAction = new UserAction();
+            do
+            {
+                Console.Out.WriteLine("Username: ");
+                var username = Console.ReadLine();
+                Console.Out.WriteLine("Password: ");
+                var password = Console.ReadLine();
+
+                flag = userAction.CreateUser(username, password, out var message);
+                if (!flag)
+                {
+                    Console.Out.WriteLine(message);
+                }
+            } while (!flag);
+            Console.Out.WriteLine("You have been connected!");
+            
         }
     }
 }
