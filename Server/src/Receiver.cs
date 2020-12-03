@@ -19,33 +19,45 @@ namespace Server
         {
             try
             {
-
-
                 while (true)
                 {
                     CustomPacket customPacket = Net.rcvMsg(comm.GetStream());
-                    if (connected == false && customPacket.OperationOrder == Operation.LoginUser)
+                    CustomPacket toSend = null;
+                    if (connected == false)
                     {
-                        User u = (User) customPacket.Data;
-                        u = Server.UsersList.SearchUser(u);
-                        if (u != null)
+                        switch (customPacket.OperationOrder)
                         {
-                            Console.WriteLine("Connected!");
-                            Net.sendMsg(comm.GetStream(),
-                                new CustomPacket(Operation.Reception, new InformationMessage("Connected")));
-                        }
-                        else
-                        {
-                            Console.WriteLine("Wrong password!");
-                            Net.sendMsg(comm.GetStream(),
-                                new CustomPacket(Operation.Refused, new InformationMessage("Wrong credentials")));
+                            case Operation.CreateUser:
+                                break;
+                            case Operation.LoginUser:
+                                toSend = loginUser(customPacket);
+                                break;
                         }
                     }
+                    
+                    Net.sendMsg(comm.GetStream(),toSend);
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
+            }
+        }
+
+        private CustomPacket loginUser(CustomPacket customPacket)
+        {
+            User u = (User) customPacket.Data;
+            u = Server.UsersList.SearchUser(u);
+            if (u != null)
+            {
+                Console.WriteLine("Connected!");
+                return new CustomPacket(Operation.Reception, new InformationMessage("Connected"));
+            }
+            else
+            {
+                Console.WriteLine("Wrong password!");
+                return
+                    new CustomPacket(Operation.Refused, new InformationMessage("Wrong credentials"));
             }
         }
     }
