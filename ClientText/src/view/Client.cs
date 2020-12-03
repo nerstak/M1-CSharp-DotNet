@@ -39,8 +39,7 @@ namespace ClientText.view
                 Console.Out.WriteLine("Password: ");
                 var password = Console.ReadLine();
 
-                string message;
-                flag = userAction.ConnectUser(username, password, out message);
+                flag = userAction.ConnectUser(username, password, out var message);
                 Console.Out.WriteLine(message);
             } while (!flag);
         }
