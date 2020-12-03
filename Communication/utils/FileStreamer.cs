@@ -21,16 +21,37 @@ namespace Communication
 
         /// <summary>
         /// Load a list from a bin file
+        /// Create it if not existing
         /// </summary>
         /// <param name="path">Path to file</param>
         /// <returns>List loaded</returns>
         public static List<T> BinLoad(string path)
         {
-            FileStream stream = File.Open(path,FileMode.Open);
-            BinaryFormatter formatter = new BinaryFormatter();
-            List<T> list = (List<T>) formatter.Deserialize(stream);
+            FileStream stream = null;
+            try
+            {
+                stream = File.Open(path, FileMode.Open);
+                BinaryFormatter formatter = new BinaryFormatter();
+                List<T> list = (List<T>) formatter.Deserialize(stream);
+                stream.Close();
+                list.RemoveAll(u => u == null);
+                return list;
+            }
+            catch
+            {
+                stream.Close();
+                return null;
+            }
+        }
+        
+        /// <summary>
+        /// Create a file
+        /// </summary>
+        /// <param name="path">Path to file</param>
+        public static void CreateFile(string path)
+        {
+            FileStream stream = File.Create(path);
             stream.Close();
-            return list;
         }
     }
 }
