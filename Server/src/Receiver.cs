@@ -19,33 +19,72 @@ namespace Server
         {
             try
             {
-
-
                 while (true)
                 {
                     CustomPacket customPacket = Net.rcvMsg(comm.GetStream());
-                    if (connected == false && customPacket.OperationOrder == Operation.LoginUser)
+                    CustomPacket toSend = null;
+                    if (connected == false)
                     {
-                        User u = (User) customPacket.Data;
-                        u = Server.UsersList.SearchUser(u);
-                        if (u != null)
+                        switch (customPacket.OperationOrder)
                         {
-                            Console.WriteLine("Connected!");
-                            Net.sendMsg(comm.GetStream(),
-                                new CustomPacket(Operation.Reception, new InformationMessage("Connected")));
-                        }
-                        else
-                        {
-                            Console.WriteLine("Wrong password!");
-                            Net.sendMsg(comm.GetStream(),
-                                new CustomPacket(Operation.Refused, new InformationMessage("Wrong credentials")));
+                            case Operation.CreateUser:
+                                toSend = createUser(customPacket);
+                                break;
+                            case Operation.LoginUser:
+                                toSend = loginUser(customPacket);
+                                break;
                         }
                     }
+                    
+                    Net.sendMsg(comm.GetStream(),toSend);
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
+            }
+        }
+
+        /**
+         * Create an user
+         */
+        private CustomPacket createUser(CustomPacket customPacket)
+        {
+            var u = (User) customPacket.Data;
+            Server.AllUsers.Semaphore.WaitOne();
+            if (Server.AllUsers.SearchUser(u) == null)
+            {
+                Server.AllUsers.AddUser(u);
+                Console.Out.WriteLine(Server.AllUsers.ToString());
+                Server.AllUsers.Semaphore.Release();
+                return new CustomPacket(Operation.Reception, new InformationMessage("Account created"));
+            }
+            else
+            {
+                Server.AllUsers.Semaphore.Release();
+                return
+                    new CustomPacket(Operation.Refused, new InformationMessage("User already existing"));
+            }
+        }
+
+        private CustomPacket loginUser(CustomPacket customPacket)
+        {
+            User u = (User) customPacket.Data;
+            Server.AllUsers.Semaphore.WaitOne();
+            u = Server.AllUsers.SearchUser(u);
+            Server.AllUsers.Semaphore.Release();
+            if (u != null)
+            {
+                Server.ConnectedUsers.Semaphore.WaitOne();
+                u = Server.ConnectedUsers.SearchUser(u);
+                Server.ConnectedUsers.Semaphore.Release();
+                return new CustomPacket(Operation.Reception, new InformationMessage("Connected"));
+            }
+            else
+            {
+                Console.WriteLine("Wrong password!");
+                return
+                    new CustomPacket(Operation.Refused, new InformationMessage("Wrong credentials"));
             }
         }
     }
