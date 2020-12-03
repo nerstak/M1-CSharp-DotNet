@@ -9,29 +9,21 @@ namespace Server
     public class Server
     {
         private int port;
-        private static ConnectedUsersTopic usersList;
-        /// <summary>
-        /// Semaphore for list access
-        /// </summary>
-        private static Semaphore semaphoreList = new Semaphore(1, 1);
+        private static UserList _allUsers;
+        private static UserList _connectedUsers;
+        
+        public static UserList AllUsers => _allUsers;
+        public static UserList ConnectedUsers => _connectedUsers;
 
-        public static ConnectedUsersTopic UsersList
-        {
-            get => usersList;
-        }
 
-        public static Semaphore SemaphoreList => semaphoreList;
 
         public Server(int port)
         {
             this.port = port;
-            usersList = new ConnectedUsersTopic(null);
-            /*User u = new User();
-            u.Username = "admin";
-            u.Password = "password";
-            users.AddUser(u);
-            users.SaveUsers(@"..\..\..\savedFiles\users.bin");*/
-            usersList.LoadUsers(@"..\..\..\savedFiles\users.bin");
+            _allUsers = new UserList(@"..\..\..\savedFiles\users.bin");
+            _allUsers.LoadUsers();
+            
+            _connectedUsers = new UserList();
         }
 
         public void Start()

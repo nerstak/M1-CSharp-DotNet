@@ -51,18 +51,17 @@ namespace Server
         private CustomPacket createUser(CustomPacket customPacket)
         {
             var u = (User) customPacket.Data;
-            Server.SemaphoreList.WaitOne();
-            u = Server.UsersList.SearchUser(u);
-            if (u == null)
+            Server.AllUsers.Semaphore.WaitOne();
+            if (Server.AllUsers.SearchUser(u) == null)
             {
-                Server.UsersList.AddUser(u);
-                Console.Out.WriteLine(Server.UsersList.ToString());
-                Server.SemaphoreList.Release();
+                Server.AllUsers.AddUser(u);
+                Console.Out.WriteLine(Server.AllUsers.ToString());
+                Server.AllUsers.Semaphore.Release();
                 return new CustomPacket(Operation.Reception, new InformationMessage("Account created"));
             }
             else
             {
-                Server.SemaphoreList.Release();
+                Server.AllUsers.Semaphore.Release();
                 return
                     new CustomPacket(Operation.Refused, new InformationMessage("User already existing"));
             }
@@ -71,12 +70,14 @@ namespace Server
         private CustomPacket loginUser(CustomPacket customPacket)
         {
             User u = (User) customPacket.Data;
-            Server.SemaphoreList.WaitOne();
-            u = Server.UsersList.SearchUser(u);
-            Server.SemaphoreList.Release();
+            Server.AllUsers.Semaphore.WaitOne();
+            u = Server.AllUsers.SearchUser(u);
+            Server.AllUsers.Semaphore.Release();
             if (u != null)
             {
-                Console.WriteLine("Connected!");
+                Server.ConnectedUsers.Semaphore.WaitOne();
+                u = Server.ConnectedUsers.SearchUser(u);
+                Server.ConnectedUsers.Semaphore.Release();
                 return new CustomPacket(Operation.Reception, new InformationMessage("Connected"));
             }
             else
