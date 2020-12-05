@@ -6,7 +6,6 @@ namespace ClientText.controller
     public abstract class AbstractAction
     {
         protected static TcpClient Connection;
-        protected static User User;
         protected CustomPacket CustomPacket;
 
         /// <summary>
@@ -20,6 +19,7 @@ namespace ClientText.controller
             Connection = new TcpClient(hostname,port);
             return Connection != null;
         }
+
 
         /// <summary>
         /// Get information message data
