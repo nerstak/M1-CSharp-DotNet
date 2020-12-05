@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Sockets;
-using Communication;
+using Communication.utils;
 using Communication.model;
+using Server.model;
 
 namespace Server
 {
@@ -32,6 +34,9 @@ namespace Server
                                 break;
                             case Operation.LoginUser:
                                 toSend = loginUser(customPacket);
+                                break;
+                            case Operation.ListTopics:
+                                toSend = listTopics(customPacket);
                                 break;
                         }
                     }
@@ -86,6 +91,11 @@ namespace Server
                 return
                     new CustomPacket(Operation.Refused, new InformationMessage("Wrong credentials"));
             }
+        }
+
+        private CustomPacket listTopics(CustomPacket customPacket)
+        {
+            return new CustomPacket(Operation.Reception, Server.TopicList.GetListTopics());
         }
     }
 }

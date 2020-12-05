@@ -2,7 +2,7 @@
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
-namespace Communication
+namespace Communication.utils
 {
     public static class FileStreamer<T>
     {

@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using Communication.model;
+using Server.model;
 
 namespace Server
 {
@@ -10,8 +12,11 @@ namespace Server
     {
         private int port;
         private static UserList _allUsers;
-        private static UserList _connectedUsers;
-        
+        private static UserList _connectedUsers = new UserList();
+        private static ConnectedUsersTopicList _topicList = new ConnectedUsersTopicList();
+
+        public static ConnectedUsersTopicList TopicList => _topicList;
+
         public static UserList AllUsers => _allUsers;
         public static UserList ConnectedUsers => _connectedUsers;
 
@@ -22,8 +27,6 @@ namespace Server
             this.port = port;
             _allUsers = new UserList(@"..\..\..\savedFiles\users.bin");
             _allUsers.LoadUsers();
-            
-            _connectedUsers = new UserList();
         }
 
         public void Start()
