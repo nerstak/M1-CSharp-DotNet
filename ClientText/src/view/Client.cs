@@ -60,11 +60,25 @@ namespace ClientText.view
                 Console.Out.WriteLine(message);
             } while (!flag);
         }
+        
+        private void TopicCreation()
+        {
+            bool flag = false;
+            TopicAction topicAction = new TopicAction();
+            do
+            {
+                Console.Out.WriteLine("Topic name: ");
+                var name = Console.ReadLine();
+
+                flag = topicAction.CreateTopic(name, out var message);
+                Console.Out.WriteLine(message);
+            } while (!flag);
+        }
 
         private void ListTopic()
         {
-            UserAction userAction = new UserAction();
-            TopicList topicList = userAction.listTopics(out var message);
+            TopicAction topicAction = new TopicAction();
+            TopicList topicList = topicAction.ListTopics(out var message);
 
             if (topicList == null || message != null)
             {

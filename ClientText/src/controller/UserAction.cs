@@ -60,30 +60,5 @@ namespace ClientText.controller
 
             return false;
         }
-
-        public TopicList listTopics(out string message)
-        {
-            message = null;
-            customPacket = new CustomPacket(Operation.ListTopics, null);
-            try
-            {
-                Net.sendMsg(connection.GetStream(), customPacket);
-
-                customPacket = Net.rcvMsg(connection.GetStream());
-                
-                if (customPacket.OperationOrder == Operation.Reception && (customPacket.Data) is TopicList list)
-                {
-                    return (TopicList) list;
-                }
-                throw new Exception("Wrong type given");
-            }
-            catch (Exception e)
-            {
-                message = "Connection failed";
-                Console.Out.WriteLine("Error: " + e);
-            }
-
-            return null;
-        }
     }
 }
