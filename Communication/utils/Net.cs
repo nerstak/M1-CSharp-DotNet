@@ -7,7 +7,7 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using Communication.model;
 
-namespace Communication
+namespace Communication.utils
 {
     
     public class Net

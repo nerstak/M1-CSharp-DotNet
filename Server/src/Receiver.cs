@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Net.Sockets;
-using Communication;
+using Communication.utils;
 using Communication.model;
 
 namespace Server

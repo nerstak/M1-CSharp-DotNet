@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using Communication.model;
 using Communication.model;
 
 namespace Server
@@ -11,6 +13,7 @@ namespace Server
         private int port;
         private static UserList _allUsers;
         private static UserList _connectedUsers;
+        private static Dictionary<Topic, ConnectedUsersTopic> _topicList;
         
         public static UserList AllUsers => _allUsers;
         public static UserList ConnectedUsers => _connectedUsers;
@@ -24,6 +27,8 @@ namespace Server
             _allUsers.LoadUsers();
             
             _connectedUsers = new UserList();
+            
+            _topicList = new Dictionary<Topic, ConnectedUsersTopic>();
         }
 
         public void Start()
