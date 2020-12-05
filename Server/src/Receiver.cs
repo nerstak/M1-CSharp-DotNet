@@ -42,7 +42,7 @@ namespace Server
                         switch (customPacket.OperationOrder)
                         {
                             case Operation.ListTopics:
-                                toSend = ListTopics(customPacket);
+                                toSend = ListTopics();
                                 break;
                             case Operation.CreateTopic:
                                 toSend = CreateTopic(customPacket);
@@ -60,13 +60,17 @@ namespace Server
             }
         }
 
-        /**
-         * Create an user
-         */
+        /// <summary>
+        /// Create an user
+        /// </summary>
+        /// <param name="customPacket">Packet received</param>
+        /// <returns>Packet to send</returns>
         private CustomPacket CreateUser(CustomPacket customPacket)
         {
             var u = (User) customPacket.Data;
             Server.AllUsers.Semaphore.WaitOne();
+            
+            // We add the user if it does not already exists
             if (Server.AllUsers.SearchUser(u) == null)
             {
                 Server.AllUsers.AddUser(u);
@@ -81,13 +85,18 @@ namespace Server
             }
         }
 
+        /// <summary>
+        /// Log an user
+        /// </summary>
+        /// <param name="customPacket">Packet received</param>
+        /// <returns>Packet to send</returns>
         private CustomPacket LoginUser(CustomPacket customPacket)
         {
             User u = (User) customPacket.Data;
             Server.AllUsers.Semaphore.WaitOne();
-            u = Server.AllUsers.SearchUser(u);
+            var searchedUser = Server.AllUsers.SearchUser(u);
             Server.AllUsers.Semaphore.Release();
-            if (u != null)
+            if (searchedUser != null) // No need to check for credentials, SearchUser already did it
             {
                 Server.ConnectedUsers.Semaphore.WaitOne();
                 Server.ConnectedUsers.AddUser(u);
@@ -103,6 +112,11 @@ namespace Server
             }
         }
 
+        /// <summary>
+        /// Create topic
+        /// </summary>
+        /// <param name="customPacket">Packet received</param>
+        /// <returns>Packet to send</returns>
         private CustomPacket CreateTopic(CustomPacket customPacket)
         {
             var t = (Topic) customPacket.Data;
@@ -122,7 +136,11 @@ namespace Server
             }
         }
 
-        private CustomPacket ListTopics(CustomPacket customPacket)
+        /// <summary>
+        /// List topics
+        /// </summary>
+        /// <returns>Packet to send</returns>
+        private CustomPacket ListTopics()
         {
             return new CustomPacket(Operation.Reception, Server.TopicList.GetListTopics());
         }

@@ -30,32 +30,19 @@ namespace Communication.model
         /// </summary>
         /// <param name="username">User to search</param>
         /// <returns>User, may be null</returns>
-        public User SearchUser(string username)
+        public User SearchUsername(string username)
         {
-            if (_users == null)
-            {
-                return null;
-            }
-            return _users.Find(u => username.Equals(u.Username));
+            return _users?.Find(u => username.Equals(u.Username));
         }
 
         /// <summary>
-        /// Search an user in the list
+        /// Search an identical user in the list
         /// </summary>
         /// <param name="user">User to search</param>
         /// <returns>User, may be null</returns>
         public User SearchUser(User user)
         {
-            User u = SearchUser(user.Username);
-            if (u != null)
-            {
-                if (u.CheckPassword(user.Password))
-                {
-                    return u;
-                }
-            }
-
-            return null;
+            return _users?.Find(u => u.Equals(user));
         }
 
         /// <summary>
@@ -92,7 +79,7 @@ namespace Communication.model
         /// <param name="username">User to remove</param>
         public void RemoveUser(string username)
         {
-            _users.Remove(SearchUser(username));
+            _users.Remove(SearchUsername(username));
         }
 
         /// <summary>
