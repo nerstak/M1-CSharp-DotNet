@@ -35,6 +35,9 @@ namespace Server
                             case Operation.LoginUser:
                                 toSend = loginUser(customPacket);
                                 break;
+                            case Operation.ListTopics:
+                                toSend = listTopics(customPacket);
+                                break;
                         }
                     }
                     

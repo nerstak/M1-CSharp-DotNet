@@ -1,5 +1,6 @@
 ﻿using System;
 using ClientText.controller;
+using Communication.model;
 
 namespace ClientText.view
 {
@@ -58,6 +59,24 @@ namespace ClientText.view
                 flag = userAction.CreateUser(username, password, out var message);
                 Console.Out.WriteLine(message);
             } while (!flag);
+        }
+
+        private void ListTopic()
+        {
+            UserAction userAction = new UserAction();
+            TopicList topicList = userAction.listTopics(out var message);
+
+            if (topicList == null || message != null)
+            {
+                Console.Out.WriteLine(message);
+            }
+            else
+            {
+                foreach (var topic in topicList.List)
+                {
+                    Console.Out.WriteLine("   " + topic.Name);
+                }
+            }
         }
     }
 }
