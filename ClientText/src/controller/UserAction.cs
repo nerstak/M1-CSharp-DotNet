@@ -4,23 +4,33 @@ using Communication.model;
 
 namespace ClientText.controller
 {
+    /// <summary>
+    /// Actions relative to user
+    /// </summary>
     public class UserAction: AbstractAction
     {
+        /// <summary>
+        /// Connect an user
+        /// </summary>
+        /// <param name="username">username</param>
+        /// <param name="password">password</param>
+        /// <param name="message">Information message</param>
+        /// <returns>Validity of operation</returns>
         public bool ConnectUser(string username, string password, out string message)
         {
             message = null;
             var u = new User {Username = username, Password = password};
 
-            customPacket = new CustomPacket(Operation.LoginUser, u);
+            CustomPacket = new CustomPacket(Operation.LoginUser, u);
             try
             {
-                Net.sendMsg(connection.GetStream(), customPacket);
+                Net.sendMsg(Connection.GetStream(), CustomPacket);
 
-                customPacket = Net.rcvMsg(connection.GetStream());
+                CustomPacket = Net.rcvMsg(Connection.GetStream());
                 message = GetInformationMessage();
-                if (customPacket.OperationOrder == Operation.Reception)
+                if (CustomPacket.OperationOrder == Operation.Reception)
                 {
-                    user = u;
+                    User = u;
                     return true;
                 }
             }
@@ -29,25 +39,31 @@ namespace ClientText.controller
                 Console.Out.WriteLine("Error: " + e);
             }
             
-
             return false;
         }
 
+        /// <summary>
+        /// Create an user
+        /// </summary>
+        /// <param name="username">username</param>
+        /// <param name="password">password</param>
+        /// <param name="message">Information message</param>
+        /// <returns>Validity of operation</returns>
         public bool CreateUser(string username, string password, out string message)
         {
             message = null;
             var u = new User {Username = username, Password = password};
 
-            customPacket = new CustomPacket(Operation.CreateUser, u);
+            CustomPacket = new CustomPacket(Operation.CreateUser, u);
             try
             {
-                Net.sendMsg(connection.GetStream(), customPacket);
+                Net.sendMsg(Connection.GetStream(), CustomPacket);
 
-                customPacket = Net.rcvMsg(connection.GetStream());
+                CustomPacket = Net.rcvMsg(Connection.GetStream());
                 message = GetInformationMessage();
-                if (customPacket.OperationOrder == Operation.Reception)
+                if (CustomPacket.OperationOrder == Operation.Reception)
                 {
-                    user = u;
+                    User = u;
                     return true;
                 }
             }
@@ -57,7 +73,6 @@ namespace ClientText.controller
                 Console.Out.WriteLine("Error: " + e);
             }
             
-
             return false;
         }
     }

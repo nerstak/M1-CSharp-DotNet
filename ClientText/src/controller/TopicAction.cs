@@ -20,14 +20,14 @@ namespace ClientText.controller
             message = null;
             var t = new Topic(name);
 
-            customPacket = new CustomPacket(Operation.CreateTopic, t);
+            CustomPacket = new CustomPacket(Operation.CreateTopic, t);
             try
             {
-                Net.sendMsg(connection.GetStream(), customPacket);
+                Net.sendMsg(Connection.GetStream(), CustomPacket);
 
-                customPacket = Net.rcvMsg(connection.GetStream());
+                CustomPacket = Net.rcvMsg(Connection.GetStream());
                 message = GetInformationMessage();
-                if (customPacket.OperationOrder == Operation.Reception)
+                if (CustomPacket.OperationOrder == Operation.Reception)
                 {
                     return true;
                 }
@@ -38,7 +38,6 @@ namespace ClientText.controller
                 Console.Out.WriteLine("Error: " + e);
             }
             
-
             return false;
         }
 
@@ -50,14 +49,14 @@ namespace ClientText.controller
         public TopicList ListTopics(out string message)
         {
             message = null;
-            customPacket = new CustomPacket(Operation.ListTopics, null);
+            CustomPacket = new CustomPacket(Operation.ListTopics, null);
             try
             {
-                Net.sendMsg(connection.GetStream(), customPacket);
+                Net.sendMsg(Connection.GetStream(), CustomPacket);
 
-                customPacket = Net.rcvMsg(connection.GetStream());
+                CustomPacket = Net.rcvMsg(Connection.GetStream());
                 
-                if (customPacket.OperationOrder == Operation.Reception && (customPacket.Data) is TopicList list)
+                if (CustomPacket.OperationOrder == Operation.Reception && (CustomPacket.Data) is TopicList list)
                 {
                     return list;
                 }

@@ -4,6 +4,9 @@ using Communication.model;
 
 namespace ClientText.view
 {
+    /// <summary>
+    /// Main view class
+    /// </summary>
     public class Client
     {
         private string hostname;
@@ -22,7 +25,11 @@ namespace ClientText.view
 
             MainLoop();
         }
-
+        
+        
+        /// <summary>
+        /// Main loop ruling user interaction
+        /// </summary>
         private void MainLoop()
         {
             //UserCreation();
@@ -32,6 +39,9 @@ namespace ClientText.view
             TopicList();
         }
 
+        /// <summary>
+        /// Links between interface and controller for User Connection
+        /// </summary>
         private void UserConnection()
         {
             bool flag = false;
@@ -48,6 +58,9 @@ namespace ClientText.view
             } while (!flag);
         }
 
+        /// <summary>
+        /// Links between interface and controller for User Creation
+        /// </summary>
         private void UserCreation()
         {
             bool flag = false;
@@ -64,6 +77,9 @@ namespace ClientText.view
             } while (!flag);
         }
         
+        /// <summary>
+        /// Links between interface and controller for Topic Creation
+        /// </summary>
         private void TopicCreation()
         {
             bool flag = false;
@@ -78,6 +94,9 @@ namespace ClientText.view
             } while (!flag);
         }
 
+        /// <summary>
+        /// Links between interface and controller for Topic Listing
+        /// </summary>
         private void TopicList()
         {
             TopicAction topicAction = new TopicAction();
