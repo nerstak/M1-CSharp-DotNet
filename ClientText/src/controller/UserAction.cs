@@ -44,7 +44,7 @@ namespace ClientText.controller
             }
             
             // We set User to null, because the LoginUserPacket() set it to the value of the user
-            Client.User = null;
+            Client.CurrentUser = null;
             
             return false;
         }
@@ -56,7 +56,7 @@ namespace ClientText.controller
         
         public static CustomPacket LoginUserPacket(User u)
         {
-            Client.User = u;
+            Client.CurrentUser = u;
             return new CustomPacket(Operation.LoginUser, u);
         }
     }

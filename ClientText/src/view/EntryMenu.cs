@@ -3,8 +3,14 @@ using ClientText.controller;
 
 namespace ClientText.view
 {
-    public class Logout
+    /// <summary>
+    /// Entry menu (logged out)
+    /// </summary>
+    public static class EntryMenu
     {
+        /// <summary>
+        /// Loop for logged out user
+        /// </summary>
         public static void Loop()
         {
             bool leave = false;
@@ -22,7 +28,6 @@ namespace ClientText.view
                             break;
                         case 2:
                             UserInput("Login", UserAction.LoginUserPacket);
-                            Console.Out.WriteLine();
                             break;
                         case 3:
                             leave = true;
@@ -35,7 +40,7 @@ namespace ClientText.view
                 }
                 
 
-            } while (leave == false && Client.User == null);
+            } while (leave == false && Client.CurrentUser == null);
         }
         
         /// <summary>
