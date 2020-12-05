@@ -9,6 +9,7 @@ namespace ClientText.view
     /// </summary>
     public class Client
     {
+        public static User User;
         private string hostname;
         private int port;
 
@@ -22,60 +23,20 @@ namespace ClientText.view
         {
             AbstractAction.Start(hostname,port);
             Console.Out.WriteLine("Connection established");
-
             MainLoop();
         }
-        
         
         /// <summary>
         /// Main loop ruling user interaction
         /// </summary>
         private void MainLoop()
         {
-            //UserCreation();
-            UserConnection();
+            Logout.Loop();
             TopicCreation();
             TopicCreation();
             TopicList();
         }
-
-        /// <summary>
-        /// Links between interface and controller for User Connection
-        /// </summary>
-        private void UserConnection()
-        {
-            bool flag = false;
-            UserAction userAction = new UserAction();
-            do
-            {
-                Console.Out.WriteLine("Username: ");
-                var username = Console.ReadLine();
-                Console.Out.WriteLine("Password: ");
-                var password = Console.ReadLine();
-
-                flag = userAction.ConnectUser(username, password, out var message);
-                Console.Out.WriteLine(message);
-            } while (!flag);
-        }
-
-        /// <summary>
-        /// Links between interface and controller for User Creation
-        /// </summary>
-        private void UserCreation()
-        {
-            bool flag = false;
-            UserAction userAction = new UserAction();
-            do
-            {
-                Console.Out.WriteLine("Username: ");
-                var username = Console.ReadLine();
-                Console.Out.WriteLine("Password: ");
-                var password = Console.ReadLine();
-
-                flag = userAction.CreateUser(username, password, out var message);
-                Console.Out.WriteLine(message);
-            } while (!flag);
-        }
+        
         
         /// <summary>
         /// Links between interface and controller for Topic Creation
