@@ -7,7 +7,7 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using Communication.model;
 
-namespace Communication
+namespace Communication.utils
 {
     
     public class Net
@@ -15,13 +15,27 @@ namespace Communication
         public static void sendMsg(Stream s, CustomPacket pck)
         {
             BinaryFormatter bf = new BinaryFormatter();
-            bf.Serialize(s, pck);
+            try
+            {
+                bf.Serialize(s, pck);
+            } catch(Exception ex)
+            {
+                throw ex;
+            }
+            
         }
 
         public static CustomPacket rcvMsg(Stream s)
         {
             BinaryFormatter bf = new BinaryFormatter();
-            return (CustomPacket)bf.Deserialize(s);
+            try
+            {
+                return (CustomPacket) bf.Deserialize(s);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

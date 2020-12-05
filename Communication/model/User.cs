@@ -16,12 +16,31 @@ namespace Communication.model
 
         public string Password
         {
+            get => password;
             set => password = value;
         }
 
-        public bool CheckPassword(String pwd)
+        public override bool Equals(object obj)
         {
-            return password.Equals(pwd);
+            //Check for null and compare run-time types.
+            if ((obj == null) || this.GetType() != obj.GetType())
+            {
+                return false;
+            }
+            else
+            {
+                return Equals((User) obj);
+            }
+        }
+
+        protected bool Equals(User other)
+        {
+            return username == other.username && password == other.password;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(username, password);
         }
     }
 }
