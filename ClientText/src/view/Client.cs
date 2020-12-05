@@ -25,8 +25,11 @@ namespace ClientText.view
 
         private void MainLoop()
         {
-            UserCreation();
+            //UserCreation();
             UserConnection();
+            TopicCreation();
+            TopicCreation();
+            TopicList();
         }
 
         private void UserConnection()
@@ -75,7 +78,7 @@ namespace ClientText.view
             } while (!flag);
         }
 
-        private void ListTopic()
+        private void TopicList()
         {
             TopicAction topicAction = new TopicAction();
             TopicList topicList = topicAction.ListTopics(out var message);
