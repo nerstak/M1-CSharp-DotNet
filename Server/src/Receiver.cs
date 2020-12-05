@@ -30,15 +30,25 @@ namespace Server
                         switch (customPacket.OperationOrder)
                         {
                             case Operation.CreateUser:
-                                toSend = createUser(customPacket);
+                                toSend = CreateUser(customPacket);
                                 break;
                             case Operation.LoginUser:
-                                toSend = loginUser(customPacket);
-                                break;
-                            case Operation.ListTopics:
-                                toSend = listTopics(customPacket);
+                                toSend = LoginUser(customPacket);
                                 break;
                         }
+                    }
+                    else
+                    {
+                        switch (customPacket.OperationOrder)
+                        {
+                            case Operation.ListTopics:
+                                toSend = ListTopics(customPacket);
+                                break;
+                            case Operation.CreateTopic:
+                                toSend = CreateTopic(customPacket);
+                                break;
+                        }
+                        
                     }
                     
                     Net.sendMsg(comm.GetStream(),toSend);
@@ -53,14 +63,13 @@ namespace Server
         /**
          * Create an user
          */
-        private CustomPacket createUser(CustomPacket customPacket)
+        private CustomPacket CreateUser(CustomPacket customPacket)
         {
             var u = (User) customPacket.Data;
             Server.AllUsers.Semaphore.WaitOne();
             if (Server.AllUsers.SearchUser(u) == null)
             {
                 Server.AllUsers.AddUser(u);
-                Console.Out.WriteLine(Server.AllUsers.ToString());
                 Server.AllUsers.Semaphore.Release();
                 return new CustomPacket(Operation.Reception, new InformationMessage("Account created"));
             }
@@ -72,7 +81,7 @@ namespace Server
             }
         }
 
-        private CustomPacket loginUser(CustomPacket customPacket)
+        private CustomPacket LoginUser(CustomPacket customPacket)
         {
             User u = (User) customPacket.Data;
             Server.AllUsers.Semaphore.WaitOne();
@@ -81,7 +90,8 @@ namespace Server
             if (u != null)
             {
                 Server.ConnectedUsers.Semaphore.WaitOne();
-                u = Server.ConnectedUsers.SearchUser(u);
+                Server.ConnectedUsers.AddUser(u);
+                connected = true;
                 Server.ConnectedUsers.Semaphore.Release();
                 return new CustomPacket(Operation.Reception, new InformationMessage("Connected"));
             }
@@ -93,7 +103,26 @@ namespace Server
             }
         }
 
-        private CustomPacket listTopics(CustomPacket customPacket)
+        private CustomPacket CreateTopic(CustomPacket customPacket)
+        {
+            var t = (Topic) customPacket.Data;
+            Server.TopicList.Semaphore.WaitOne();
+            if (Server.TopicList.SearchTopic(t) == null)
+            {
+                var connectedUsersTopic = new ConnectedUsersTopic(t);
+                Server.TopicList.ConnectedUsersTopics.Add(connectedUsersTopic);
+                Server.TopicList.Semaphore.Release();
+                return new CustomPacket(Operation.Reception, new InformationMessage("Topic created"));
+            }
+            else
+            {
+                Server.TopicList.Semaphore.Release();
+                return
+                    new CustomPacket(Operation.Refused, new InformationMessage("Topic already existing"));
+            }
+        }
+
+        private CustomPacket ListTopics(CustomPacket customPacket)
         {
             return new CustomPacket(Operation.Reception, Server.TopicList.GetListTopics());
         }
