@@ -13,6 +13,11 @@ namespace Server.model
 
         public List<ConnectedUsersTopic> ConnectedUsersTopics => _connectedUsersTopics;
 
+        public ConnectedUsersTopic SearchTopic(Topic topic)
+        {
+            return _connectedUsersTopics.Find(t => t.Topic.Equals(topic));
+        }
+
         /// <summary>
         /// Get list of all topics
         /// </summary>

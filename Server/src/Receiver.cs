@@ -30,15 +30,25 @@ namespace Server
                         switch (customPacket.OperationOrder)
                         {
                             case Operation.CreateUser:
-                                toSend = createUser(customPacket);
+                                toSend = CreateUser(customPacket);
                                 break;
                             case Operation.LoginUser:
-                                toSend = loginUser(customPacket);
-                                break;
-                            case Operation.ListTopics:
-                                toSend = listTopics(customPacket);
+                                toSend = LoginUser(customPacket);
                                 break;
                         }
+                    }
+                    else
+                    {
+                        switch (customPacket.OperationOrder)
+                        {
+                            case Operation.ListTopics:
+                                toSend = ListTopics();
+                                break;
+                            case Operation.CreateTopic:
+                                toSend = CreateTopic(customPacket);
+                                break;
+                        }
+                        
                     }
                     
                     Net.sendMsg(comm.GetStream(),toSend);
@@ -50,17 +60,20 @@ namespace Server
             }
         }
 
-        /**
-         * Create an user
-         */
-        private CustomPacket createUser(CustomPacket customPacket)
+        /// <summary>
+        /// Create an user
+        /// </summary>
+        /// <param name="customPacket">Packet received</param>
+        /// <returns>Packet to send</returns>
+        private CustomPacket CreateUser(CustomPacket customPacket)
         {
             var u = (User) customPacket.Data;
             Server.AllUsers.Semaphore.WaitOne();
+            
+            // We add the user if it does not already exists
             if (Server.AllUsers.SearchUser(u) == null)
             {
                 Server.AllUsers.AddUser(u);
-                Console.Out.WriteLine(Server.AllUsers.ToString());
                 Server.AllUsers.Semaphore.Release();
                 return new CustomPacket(Operation.Reception, new InformationMessage("Account created"));
             }
@@ -72,16 +85,22 @@ namespace Server
             }
         }
 
-        private CustomPacket loginUser(CustomPacket customPacket)
+        /// <summary>
+        /// Log an user
+        /// </summary>
+        /// <param name="customPacket">Packet received</param>
+        /// <returns>Packet to send</returns>
+        private CustomPacket LoginUser(CustomPacket customPacket)
         {
             User u = (User) customPacket.Data;
             Server.AllUsers.Semaphore.WaitOne();
-            u = Server.AllUsers.SearchUser(u);
+            var searchedUser = Server.AllUsers.SearchUser(u);
             Server.AllUsers.Semaphore.Release();
-            if (u != null)
+            if (searchedUser != null) // No need to check for credentials, SearchUser already did it
             {
                 Server.ConnectedUsers.Semaphore.WaitOne();
-                u = Server.ConnectedUsers.SearchUser(u);
+                Server.ConnectedUsers.AddUser(u);
+                connected = true;
                 Server.ConnectedUsers.Semaphore.Release();
                 return new CustomPacket(Operation.Reception, new InformationMessage("Connected"));
             }
@@ -93,7 +112,35 @@ namespace Server
             }
         }
 
-        private CustomPacket listTopics(CustomPacket customPacket)
+        /// <summary>
+        /// Create topic
+        /// </summary>
+        /// <param name="customPacket">Packet received</param>
+        /// <returns>Packet to send</returns>
+        private CustomPacket CreateTopic(CustomPacket customPacket)
+        {
+            var t = (Topic) customPacket.Data;
+            Server.TopicList.Semaphore.WaitOne();
+            if (Server.TopicList.SearchTopic(t) == null)
+            {
+                var connectedUsersTopic = new ConnectedUsersTopic(t);
+                Server.TopicList.ConnectedUsersTopics.Add(connectedUsersTopic);
+                Server.TopicList.Semaphore.Release();
+                return new CustomPacket(Operation.Reception, new InformationMessage("Topic created"));
+            }
+            else
+            {
+                Server.TopicList.Semaphore.Release();
+                return
+                    new CustomPacket(Operation.Refused, new InformationMessage("Topic already existing"));
+            }
+        }
+
+        /// <summary>
+        /// List topics
+        /// </summary>
+        /// <returns>Packet to send</returns>
+        private CustomPacket ListTopics()
         {
             return new CustomPacket(Operation.Reception, Server.TopicList.GetListTopics());
         }

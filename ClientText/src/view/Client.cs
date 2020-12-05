@@ -4,6 +4,9 @@ using Communication.model;
 
 namespace ClientText.view
 {
+    /// <summary>
+    /// Main view class
+    /// </summary>
     public class Client
     {
         private string hostname;
@@ -22,13 +25,23 @@ namespace ClientText.view
 
             MainLoop();
         }
-
+        
+        
+        /// <summary>
+        /// Main loop ruling user interaction
+        /// </summary>
         private void MainLoop()
         {
-            UserCreation();
+            //UserCreation();
             UserConnection();
+            TopicCreation();
+            TopicCreation();
+            TopicList();
         }
 
+        /// <summary>
+        /// Links between interface and controller for User Connection
+        /// </summary>
         private void UserConnection()
         {
             bool flag = false;
@@ -45,6 +58,9 @@ namespace ClientText.view
             } while (!flag);
         }
 
+        /// <summary>
+        /// Links between interface and controller for User Creation
+        /// </summary>
         private void UserCreation()
         {
             bool flag = false;
@@ -60,11 +76,31 @@ namespace ClientText.view
                 Console.Out.WriteLine(message);
             } while (!flag);
         }
-
-        private void ListTopic()
+        
+        /// <summary>
+        /// Links between interface and controller for Topic Creation
+        /// </summary>
+        private void TopicCreation()
         {
-            UserAction userAction = new UserAction();
-            TopicList topicList = userAction.listTopics(out var message);
+            bool flag = false;
+            TopicAction topicAction = new TopicAction();
+            do
+            {
+                Console.Out.WriteLine("Topic name: ");
+                var name = Console.ReadLine();
+
+                flag = topicAction.CreateTopic(name, out var message);
+                Console.Out.WriteLine(message);
+            } while (!flag);
+        }
+
+        /// <summary>
+        /// Links between interface and controller for Topic Listing
+        /// </summary>
+        private void TopicList()
+        {
+            TopicAction topicAction = new TopicAction();
+            TopicList topicList = topicAction.ListTopics(out var message);
 
             if (topicList == null || message != null)
             {
