@@ -7,6 +7,9 @@ namespace ClientText.controller
 {
     public class Listener
     {
+        /// <summary>
+        /// Loop handling listener
+        /// </summary>
         public void Loop()
         {
             while (Client.CurrentUser != null)

@@ -32,7 +32,7 @@ namespace Communication.model
 
         public override string ToString()
         {
-            return "[" + sender + " to " + recipient + ": " + content;
+            return sender + " to " + recipient + ": " + content;
         }
     }
 }

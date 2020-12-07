@@ -56,7 +56,7 @@ namespace Server
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                Console.WriteLine("Connection lost");
             }
         }
 
@@ -96,7 +96,8 @@ namespace Server
             Server.AllUsers.Semaphore.WaitOne();
             var searchedUser = Server.AllUsers.SearchUser(u);
             Server.AllUsers.Semaphore.Release();
-            if (searchedUser != null) // No need to check for credentials, SearchUser already did it
+            if (searchedUser != null && // No need to check for credentials, SearchUser already did it
+                Server.ConnectedUsers.SearchUser(searchedUser) == null)  // No double connection
             {
                 Server.ConnectedUsers.Semaphore.WaitOne();
                 Server.ConnectedUsers.AddUser(u);

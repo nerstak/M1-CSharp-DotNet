@@ -65,7 +65,7 @@ namespace ClientText.view
                 CustomPacket customPacket = commandParser.ParseCommand(Console.In.ReadLine());
                 if (customPacket == null)
                 {
-                    // Display it
+                    Console.Out.WriteLine(commandParser.Message);
                 }
                 else
                 {
