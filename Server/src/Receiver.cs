@@ -10,9 +10,8 @@ namespace Server
     class Receiver
     {
         private TcpClient comm;
-        private bool connected = false;
         private bool _keepAlive = true;
-        private User _user;
+        private User _user = null;
 
         public Receiver(TcpClient s)
         {
@@ -27,7 +26,7 @@ namespace Server
                 {
                     CustomPacket customPacket = Net.rcvMsg(comm.GetStream());
                     CustomPacket toSend = null;
-                    if (connected == false)
+                    if (_user == null)
                     {
                         switch (customPacket.OperationOrder)
                         {
@@ -48,6 +47,9 @@ namespace Server
                                 break;
                             case Operation.CreateTopic:
                                 toSend = CreateTopic(customPacket);
+                                break;
+                            case Operation.SendToTopic:
+                                toSend = SendToTopic(customPacket);
                                 break;
                         }
                         
@@ -108,8 +110,8 @@ namespace Server
                 {
                     Server.ConnectedUsers.Semaphore.WaitOne();
                     Server.ConnectedUsers.AddUser(u);
-                    connected = true;
                     _user = u;
+                    Server.UserConnections.Add(_user,comm);
                     Server.ConnectedUsers.Semaphore.Release();
                     return new CustomPacket(Operation.Reception, new InformationMessage("Connected"));
                 }
@@ -137,7 +139,7 @@ namespace Server
             if (Server.TopicList.SearchTopic(t) == null)
             {
                 var connectedUsersTopic = new ConnectedUsersTopic(t);
-                Server.TopicList.ConnectedUsersTopics.Add(connectedUsersTopic);
+                Server.TopicList.List.Add(connectedUsersTopic);
                 Server.TopicList.Semaphore.Release();
                 return new CustomPacket(Operation.Reception, new InformationMessage("Topic created"));
             }
@@ -156,6 +158,24 @@ namespace Server
         private CustomPacket ListTopics()
         {
             return new CustomPacket(Operation.Reception, Server.TopicList.GetListTopics());
+        }
+
+        private CustomPacket SendToTopic(CustomPacket customPacket)
+        {
+            Message msg = (Message) customPacket.Data;
+            if (Server.TopicList.CheckUserConnectionTopic((Topic) msg.Recipient, msg.Sender))
+            {
+                var users = Server.TopicList.List.Find(tp => tp.Topic.Equals(msg.Recipient))?.UserList.Users;
+                foreach (var u in users)
+                {
+                    TcpClient tmp = Server.UserConnections[u];
+                    Net.sendMsg(tmp.GetStream(),new CustomPacket(Operation.Reception,msg));
+                }
+                
+                return new CustomPacket(Operation.Reception,null);
+            }
+            
+            return new CustomPacket(Operation.Refused, new InformationMessage("You are not connected to " + (Topic) msg.Recipient));
         }
     }
 }
