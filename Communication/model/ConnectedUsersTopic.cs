@@ -8,15 +8,11 @@ namespace Communication.model
     {
         private Topic _topic;
         private UserList _userList;
-        
-        private Queue<Message> _history;
-        private Semaphore _semaphoreHistory;
 
         public ConnectedUsersTopic(Topic topic)
         {
-            this._topic = topic;
+            _topic = topic;
             _userList = new UserList();
-            _history = new Queue<Message>();
         }
 
         public Topic Topic

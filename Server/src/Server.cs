@@ -14,6 +14,7 @@ namespace Server
         private static UserList _allUsers;
         private static UserList _connectedUsers = new UserList();
         private static ConnectedUsersTopicList _topicList = new ConnectedUsersTopicList();
+        public static Dictionary<User, TcpClient> UserConnections = new Dictionary<User, TcpClient>();
 
         public static ConnectedUsersTopicList TopicList => _topicList;
 
@@ -38,7 +39,7 @@ namespace Server
             {
                 TcpClient comm = l.AcceptTcpClient();
                 Console.WriteLine("Connection established @" + comm);
-                new Thread(new Receiver(comm).doOperation).Start();
+                new Thread(new Receiver(comm).Listener).Start();
             }
         }
         

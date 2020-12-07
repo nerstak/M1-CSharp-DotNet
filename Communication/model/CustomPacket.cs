@@ -5,24 +5,28 @@ namespace Communication.model
     [Serializable]
     public class CustomPacket
     {
-        private Operation operation;
-        private DataPacket data;
-        
-        public Operation OperationOrder
-        {
-            get;
-        }
+        private Operation _operation;
+        private DataPacket _data;
 
-        public DataPacket Data
-        {
-            get;
-            set;
-        }
+        public Operation Operation => _operation;
+
+        public DataPacket Data => _data;
 
         public CustomPacket(Operation operationOrder, DataPacket data)
         {
-            OperationOrder = operationOrder;
-            Data = data;
+            this._operation = operationOrder;
+            this._data = data;
+        }
+
+        public override string ToString()
+        {
+            string tmp = "";
+            if (_operation == Operation.Refused)
+            {
+                tmp += "Error: ";
+            }
+
+            return tmp + _data;
         }
     }
 }

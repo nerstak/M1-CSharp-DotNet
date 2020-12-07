@@ -2,6 +2,7 @@
 
 namespace Communication.model
 {
+    [Serializable]
     public class Message: DataPacket
     {
         private String content;
@@ -28,6 +29,11 @@ namespace Communication.model
         public Recipient Recipient
         {
             get => recipient;
+        }
+
+        public override string ToString()
+        {
+            return sender + " to " + recipient + ": " + content;
         }
     }
 }

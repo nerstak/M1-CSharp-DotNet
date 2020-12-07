@@ -7,27 +7,31 @@ using Server.model;
 
 namespace Server
 {
-    class Receiver
+    public partial class Receiver
     {
         private TcpClient comm;
-        private bool connected = false;
+        private bool _keepAlive = true;
+        private User _user = null;
 
         public Receiver(TcpClient s)
         {
             comm = s;
         }
 
-        public void doOperation()
+        /// <summary>
+        /// Listening function
+        /// </summary>
+        public void Listener()
         {
             try
             {
-                while (true)
+                while (_keepAlive)
                 {
                     CustomPacket customPacket = Net.rcvMsg(comm.GetStream());
                     CustomPacket toSend = null;
-                    if (connected == false)
+                    if (_user == null)
                     {
-                        switch (customPacket.OperationOrder)
+                        switch (customPacket.Operation)
                         {
                             case Operation.CreateUser:
                                 toSend = CreateUser(customPacket);
@@ -39,13 +43,22 @@ namespace Server
                     }
                     else
                     {
-                        switch (customPacket.OperationOrder)
+                        switch (customPacket.Operation)
                         {
                             case Operation.ListTopics:
                                 toSend = ListTopics();
                                 break;
                             case Operation.CreateTopic:
                                 toSend = CreateTopic(customPacket);
+                                break;
+                            case Operation.JoinTopic:
+                                toSend = JoinTopic(customPacket);
+                                break;
+                            case Operation.SendToTopic:
+                                toSend = SendToTopic(customPacket);
+                                break;
+                            case Operation.SendToUser:
+                                toSend = SendToUser(customPacket);
                                 break;
                         }
                         
@@ -54,95 +67,18 @@ namespace Server
                     Net.sendMsg(comm.GetStream(),toSend);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.WriteLine(ex.ToString());
+                // If we have trouble, we disconnect the user
+                _keepAlive = false;
+                if (_user != null)
+                {
+                    Server.TopicList.RemoveUserFromAll(_user);
+                    Server.ConnectedUsers.RemoveUser(_user);
+                    Server.UserConnections.Remove(_user);
+                }
+                Console.WriteLine("Connection lost");
             }
-        }
-
-        /// <summary>
-        /// Create an user
-        /// </summary>
-        /// <param name="customPacket">Packet received</param>
-        /// <returns>Packet to send</returns>
-        private CustomPacket CreateUser(CustomPacket customPacket)
-        {
-            var u = (User) customPacket.Data;
-            Server.AllUsers.Semaphore.WaitOne();
-            
-            // We add the user if it does not already exists
-            if (Server.AllUsers.SearchUser(u) == null)
-            {
-                Server.AllUsers.AddUser(u);
-                Server.AllUsers.Semaphore.Release();
-                return new CustomPacket(Operation.Reception, new InformationMessage("Account created"));
-            }
-            else
-            {
-                Server.AllUsers.Semaphore.Release();
-                return
-                    new CustomPacket(Operation.Refused, new InformationMessage("User already existing"));
-            }
-        }
-
-        /// <summary>
-        /// Log an user
-        /// </summary>
-        /// <param name="customPacket">Packet received</param>
-        /// <returns>Packet to send</returns>
-        private CustomPacket LoginUser(CustomPacket customPacket)
-        {
-            User u = (User) customPacket.Data;
-            Server.AllUsers.Semaphore.WaitOne();
-            var searchedUser = Server.AllUsers.SearchUser(u);
-            Server.AllUsers.Semaphore.Release();
-            if (searchedUser != null) // No need to check for credentials, SearchUser already did it
-            {
-                Server.ConnectedUsers.Semaphore.WaitOne();
-                Server.ConnectedUsers.AddUser(u);
-                connected = true;
-                Server.ConnectedUsers.Semaphore.Release();
-                return new CustomPacket(Operation.Reception, new InformationMessage("Connected"));
-            }
-            else
-            {
-                Console.WriteLine("Wrong password!");
-                return
-                    new CustomPacket(Operation.Refused, new InformationMessage("Wrong credentials"));
-            }
-        }
-
-        /// <summary>
-        /// Create topic
-        /// </summary>
-        /// <param name="customPacket">Packet received</param>
-        /// <returns>Packet to send</returns>
-        private CustomPacket CreateTopic(CustomPacket customPacket)
-        {
-            var t = (Topic) customPacket.Data;
-            Server.TopicList.Semaphore.WaitOne();
-            if (Server.TopicList.SearchTopic(t) == null)
-            {
-                var connectedUsersTopic = new ConnectedUsersTopic(t);
-                Server.TopicList.ConnectedUsersTopics.Add(connectedUsersTopic);
-                Server.TopicList.Semaphore.Release();
-                return new CustomPacket(Operation.Reception, new InformationMessage("Topic created"));
-            }
-            else
-            {
-                Server.TopicList.Semaphore.Release();
-                return
-                    new CustomPacket(Operation.Refused, new InformationMessage("Topic already existing"));
-            }
-        }
-
-        /// <summary>
-        /// List topics
-        /// </summary>
-        /// <returns>Packet to send</returns>
-        private CustomPacket ListTopics()
-        {
-            return new CustomPacket(Operation.Reception, Server.TopicList.GetListTopics());
         }
     }
 }

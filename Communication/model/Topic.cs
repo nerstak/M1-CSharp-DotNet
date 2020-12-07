@@ -14,6 +14,11 @@ namespace Communication.model
 
         public string Name => _name;
 
+        public override string ToString()
+        {
+            return _name;
+        }
+
         public override bool Equals(object obj)
         {
             //Check for null and compare run-time types.

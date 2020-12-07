@@ -5,19 +5,31 @@ namespace Communication.model
     [Serializable]
     public class User: DataPacket, Recipient
     {
-        private String username;
-        private String password;
+        private String _username;
+        private String _password;
 
+        public User() {}
+
+        public User(User u)
+        {
+            this._username = u._username;
+        }
+        
         public string Username
         {
-            get => username;
-            set => username = value;
+            get => _username;
+            set => _username = value;
         }
 
         public string Password
         {
-            get => password;
-            set => password = value;
+            get => _password;
+            set => _password = value;
+        }
+
+        public override string ToString()
+        {
+            return "@" + _username;
         }
 
         public override bool Equals(object obj)
@@ -35,12 +47,7 @@ namespace Communication.model
 
         protected bool Equals(User other)
         {
-            return username == other.username && password == other.password;
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(username, password);
+            return _username == other._username && _password == other._password;
         }
     }
 }
