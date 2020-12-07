@@ -66,6 +66,7 @@ namespace Server
                 _keepAlive = false;
                 if (_user != null)
                 {
+                    Server.TopicList.RemoveUserFromAll(_user);
                     Server.ConnectedUsers.RemoveUser(_user);
                     Server.UserConnections.Remove(_user);
                 }
@@ -198,7 +199,7 @@ namespace Server
             Message msg = (Message) customPacket.Data;
             if (Server.TopicList.CheckUserConnectionTopic((Topic) msg.Recipient, msg.Sender))
             {
-                var users = Server.TopicList.List.Find(tp => tp.Topic.Equals(msg.Recipient))?.UserList.Users;
+                var users = Server.TopicList.SearchTopic((Topic) msg.Recipient).UserList.Users;
                 foreach (var u in users)
                 {
                     TcpClient tmp = Server.UserConnections[u];

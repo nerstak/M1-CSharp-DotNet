@@ -24,10 +24,10 @@ namespace ClientText.view
                     switch (value)
                     {
                         case 1:
-                            UserInput("Create your user", UserAction.CreateUserPacket);
+                            UserInput("Create your user", MenuActions.CreateUserPacket);
                             break;
                         case 2:
-                            UserInput("Login", UserAction.LoginUserPacket);
+                            UserInput("Login", MenuActions.LoginUserPacket);
                             break;
                         case 3:
                             leave = true;
@@ -46,10 +46,10 @@ namespace ClientText.view
         /// <summary>
         /// Links between interface and controller for User Input when logged out
         /// </summary>
-        private void UserInput(string informationMessage, UserAction.PacketCreation packetCreation)
+        private void UserInput(string informationMessage, MenuActions.PacketCreation packetCreation)
         {
             bool flag = false;
-            UserAction userAction = new UserAction();
+            MenuActions menuActions = new MenuActions();
             do
             {
                 Console.Out.WriteLine(informationMessage);
@@ -67,7 +67,7 @@ namespace ClientText.view
                     Console.Out.WriteLine("Password: ");
                     var password = Console.ReadLine();
 
-                    flag = userAction.HandleUser(username, password, out var message, packetCreation);
+                    flag = menuActions.HandleUser(username, password, out var message, packetCreation);
                     Console.Out.WriteLine(message);
                 }
             } while (!flag);
