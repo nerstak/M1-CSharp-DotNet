@@ -11,6 +11,8 @@ namespace Server
     {
         private TcpClient comm;
         private bool connected = false;
+        private bool _keepAlive = true;
+        private User _user;
 
         public Receiver(TcpClient s)
         {
@@ -21,7 +23,7 @@ namespace Server
         {
             try
             {
-                while (true)
+                while (_keepAlive)
                 {
                     CustomPacket customPacket = Net.rcvMsg(comm.GetStream());
                     CustomPacket toSend = null;
@@ -56,7 +58,9 @@ namespace Server
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                _keepAlive = false;
+                Server.ConnectedUsers.RemoveUser(_user);
+                Console.WriteLine("Connection lost");
             }
         }
 
@@ -96,20 +100,29 @@ namespace Server
             Server.AllUsers.Semaphore.WaitOne();
             var searchedUser = Server.AllUsers.SearchUser(u);
             Server.AllUsers.Semaphore.Release();
+
+            string errorMessage = "";
             if (searchedUser != null) // No need to check for credentials, SearchUser already did it
             {
-                Server.ConnectedUsers.Semaphore.WaitOne();
-                Server.ConnectedUsers.AddUser(u);
-                connected = true;
-                Server.ConnectedUsers.Semaphore.Release();
-                return new CustomPacket(Operation.Reception, new InformationMessage("Connected"));
+                if (Server.ConnectedUsers.SearchUser(searchedUser) != null) // No double connection
+                {
+                    Server.ConnectedUsers.Semaphore.WaitOne();
+                    Server.ConnectedUsers.AddUser(u);
+                    connected = true;
+                    _user = u;
+                    Server.ConnectedUsers.Semaphore.Release();
+                    return new CustomPacket(Operation.Reception, new InformationMessage("Connected"));
+                }
+
+                errorMessage = "You are already connected";
             }
             else
             {
-                Console.WriteLine("Wrong password!");
-                return
-                    new CustomPacket(Operation.Refused, new InformationMessage("Wrong credentials"));
+                errorMessage = "Wrong credentials";
             }
+            
+            
+            return new CustomPacket(Operation.Refused, new InformationMessage(errorMessage));
         }
 
         /// <summary>

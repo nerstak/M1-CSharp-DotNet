@@ -24,5 +24,16 @@ namespace Communication.model
             OperationOrder = operationOrder;
             Data = data;
         }
+
+        public override string ToString()
+        {
+            string tmp = "";
+            if (operation == Operation.Refused)
+            {
+                tmp += "Error: ";
+            }
+
+            return tmp + Data;
+        }
     }
 }

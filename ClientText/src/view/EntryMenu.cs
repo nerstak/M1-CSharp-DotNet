@@ -6,12 +6,12 @@ namespace ClientText.view
     /// <summary>
     /// Entry menu (logged out)
     /// </summary>
-    public static class EntryMenu
+    public partial class Client
     {
         /// <summary>
         /// Loop for logged out user
         /// </summary>
-        public static void Loop()
+        public void EntryLoop()
         {
             bool leave = false;
             do
@@ -46,7 +46,7 @@ namespace ClientText.view
         /// <summary>
         /// Links between interface and controller for User Input when logged out
         /// </summary>
-        private static void UserInput(string informationMessage, UserAction.PacketCreation packetCreation)
+        private void UserInput(string informationMessage, UserAction.PacketCreation packetCreation)
         {
             bool flag = false;
             UserAction userAction = new UserAction();

@@ -28,9 +28,9 @@ namespace ClientText.controller
             CustomPacket = packetCreation(u);
             try
             {
-                Net.sendMsg(Connection.GetStream(), CustomPacket);
+                Net.sendMsg(Client.Connection.GetStream(), CustomPacket);
 
-                CustomPacket = Net.rcvMsg(Connection.GetStream());
+                CustomPacket = Net.rcvMsg(Client.Connection.GetStream());
                 message = GetInformationMessage();
                 if (CustomPacket.OperationOrder == Operation.Reception)
                 {

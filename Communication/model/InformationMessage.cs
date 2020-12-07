@@ -13,5 +13,10 @@ namespace Communication.model
         {
             this.content = content;
         }
+
+        public override string ToString()
+        {
+            return content;
+        }
     }
 }
