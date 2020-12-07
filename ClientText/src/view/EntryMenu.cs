@@ -38,11 +38,9 @@ namespace ClientText.view
                 {
                     Console.Out.WriteLine("Incorrect input");
                 }
-                
-
             } while (leave == false && Client.CurrentUser == null);
         }
-        
+
         /// <summary>
         /// Links between interface and controller for User Input when logged out
         /// </summary>
@@ -53,10 +51,10 @@ namespace ClientText.view
             do
             {
                 Console.Out.WriteLine(informationMessage);
-                
+
                 Console.Out.WriteLine("Username (write \"leave\" to leave): ");
                 var username = Console.ReadLine();
-                
+
                 // Checking if user wants to leave
                 if (username != null && username.Equals("leave"))
                 {
