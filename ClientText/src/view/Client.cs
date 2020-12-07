@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using ClientText.controller;
 using Communication.model;
 
@@ -34,7 +35,7 @@ namespace ClientText.view
             EntryLoop();
             if (CurrentUser != null)
             {
-                MainMenu.Loop();
+                // MainMenu.Loop();
             }
         }
     }
