@@ -7,7 +7,7 @@ namespace ClientText.view
     /// <summary>
     /// Main view class
     /// </summary>
-    public class Client
+    public partial class Client
     {
         public static User CurrentUser;
         private string hostname;
@@ -31,7 +31,7 @@ namespace ClientText.view
         /// </summary>
         private void MainLoop()
         {
-            EntryMenu.Loop();
+            EntryLoop();
             if (CurrentUser != null)
             {
                 MainMenu.Loop();
