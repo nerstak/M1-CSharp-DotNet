@@ -15,6 +15,7 @@ namespace ClientText.controller
 
         private static readonly string ERROR_ARGS = "Error in the number of argument";
         private static readonly string ERROR_UNKNOWN = "This command does not exists";
+        private static readonly string LOGOUT = "Log out";
         private string _message;
 
         public string Message => _message;
@@ -54,6 +55,8 @@ namespace ClientText.controller
                     return ParsePm(cmd, Operation.SendToUser);
                 case "tell":
                     return ParseTell(cmd, Operation.SendToTopic);
+                case "logout":
+                    return Logout();
                 default:
                     _message = ERROR_UNKNOWN;
                     break;
@@ -151,5 +154,15 @@ namespace ClientText.controller
             return new CustomPacket(op,msg);
         }
 
+        /// <summary>
+        /// Logout
+        /// </summary>
+        /// <returns>Null</returns>
+        private CustomPacket Logout()
+        {
+            Client.CurrentUser = null;
+            _message = LOGOUT;
+            return null;
+        }
     }
 }

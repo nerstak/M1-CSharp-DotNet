@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Sockets;
 using ClientText.controller;
 using Communication.model;
+using Communication.utils;
 
 namespace ClientText.view
 {
@@ -11,6 +13,7 @@ namespace ClientText.view
     public partial class Client
     {
         public static User CurrentUser;
+        public static TcpClient Connection;
         private string hostname;
         private int port;
 
@@ -22,9 +25,21 @@ namespace ClientText.view
 
         public void Start()
         {
-            AbstractAction.Start(hostname,port);
+            Connect(hostname,port);
             Console.Out.WriteLine("Connection established");
             MainLoop();
+        }
+
+        /// <summary>
+        /// Start the connection to the server
+        /// </summary>
+        /// <param name="hostname">Server address</param>
+        /// <param name="port">Server port</param>
+        /// <returns>Integrity of operation</returns>
+        public static bool Connect(string hostname, int port)
+        {
+            Connection = new TcpClient(hostname,port);
+            return Connection != null;
         }
         
         /// <summary>
@@ -35,7 +50,24 @@ namespace ClientText.view
             EntryLoop();
             if (CurrentUser != null)
             {
-                // MainMenu.Loop();
+                Chat();
+            }
+        }
+
+        private void Chat()
+        {
+            while (CurrentUser != null)
+            {
+                CommandParser commandParser = new CommandParser();
+                CustomPacket customPacket = commandParser.ParseCommand(Console.In.ReadLine());
+                if (customPacket == null)
+                {
+                    // Display it
+                }
+                else
+                {
+                    Net.sendMsg(Connection.GetStream(), customPacket);
+                }
             }
         }
     }
