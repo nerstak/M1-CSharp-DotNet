@@ -149,10 +149,9 @@ namespace ClientText.controller
             for(var i = 0; i < 2 ;i++)tmp.RemoveAt(0);
             
             // Creating message
-            Message msg = new Message(string.Join(" ", tmp), Client.CurrentUser, r);
+            Message msg = new Message(string.Join(" ", tmp), new User(Client.CurrentUser), r);
             
-            var tmpaz = new CustomPacket(op,msg);
-            return tmpaz;
+            return new CustomPacket(op,msg);
         }
 
         /// <summary>

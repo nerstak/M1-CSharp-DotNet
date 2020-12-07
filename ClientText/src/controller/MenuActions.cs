@@ -8,8 +8,24 @@ namespace ClientText.controller
     /// <summary>
     /// Actions relative to user
     /// </summary>
-    public class UserAction: AbstractAction
+    public class MenuActions
     {
+        private CustomPacket _customPacket;
+        
+
+        /// <summary>
+        /// Get information message data
+        /// </summary>
+        /// <returns>Data contained, or null</returns>
+        private string GetInformationMessage()
+        {
+            if (_customPacket.Data is InformationMessage)
+            {
+                return ((InformationMessage) _customPacket.Data).Content;
+            }
+
+            return null;
+        }
         public delegate CustomPacket PacketCreation(User user);
 
         /// <summary>
@@ -25,14 +41,14 @@ namespace ClientText.controller
             message = null;
             var u = new User {Username = username, Password = password};
 
-            CustomPacket = packetCreation(u);
+            _customPacket = packetCreation(u);
             try
             {
-                Net.sendMsg(Client.Connection.GetStream(), CustomPacket);
+                Net.sendMsg(Client.Connection.GetStream(), _customPacket);
 
-                CustomPacket = Net.rcvMsg(Client.Connection.GetStream());
+                _customPacket = Net.rcvMsg(Client.Connection.GetStream());
                 message = GetInformationMessage();
-                if (CustomPacket.Operation == Operation.Reception)
+                if (_customPacket.Operation == Operation.Reception)
                 {
                     return true;
                 }
