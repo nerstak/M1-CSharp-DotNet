@@ -28,7 +28,7 @@ namespace Server
                     CustomPacket toSend = null;
                     if (_user == null)
                     {
-                        switch (customPacket.OperationOrder)
+                        switch (customPacket.Operation)
                         {
                             case Operation.CreateUser:
                                 toSend = CreateUser(customPacket);
@@ -40,13 +40,16 @@ namespace Server
                     }
                     else
                     {
-                        switch (customPacket.OperationOrder)
+                        switch (customPacket.Operation)
                         {
                             case Operation.ListTopics:
                                 toSend = ListTopics();
                                 break;
                             case Operation.CreateTopic:
                                 toSend = CreateTopic(customPacket);
+                                break;
+                            case Operation.JoinTopic:
+                                toSend = JoinTopic(customPacket);
                                 break;
                             case Operation.SendToTopic:
                                 toSend = SendToTopic(customPacket);
@@ -61,7 +64,11 @@ namespace Server
             catch (Exception ex)
             {
                 _keepAlive = false;
-                Server.ConnectedUsers.RemoveUser(_user);
+                if (_user != null)
+                {
+                    Server.ConnectedUsers.RemoveUser(_user);
+                    Server.UserConnections.Remove(_user);
+                }
                 Console.WriteLine("Connection lost");
             }
         }
@@ -106,7 +113,7 @@ namespace Server
             string errorMessage = "";
             if (searchedUser != null) // No need to check for credentials, SearchUser already did it
             {
-                if (Server.ConnectedUsers.SearchUser(searchedUser) != null) // No double connection
+                if (Server.ConnectedUsers.SearchUser(searchedUser) == null) // No double connection
                 {
                     Server.ConnectedUsers.Semaphore.WaitOne();
                     Server.ConnectedUsers.AddUser(u);
@@ -158,6 +165,32 @@ namespace Server
         private CustomPacket ListTopics()
         {
             return new CustomPacket(Operation.Reception, Server.TopicList.GetListTopics());
+        }
+
+        private CustomPacket JoinTopic(CustomPacket customPacket)
+        {
+            Operation op = Operation.Reception;
+            string message = "Added to topic " + (Topic) customPacket.Data;
+            var topicList = Server.TopicList.SearchTopic((Topic) customPacket.Data);
+            if (topicList != null)
+            {
+                if (topicList.UserList.SearchUser(_user) == null)
+                {
+                    topicList.UserList.AddUser(_user);
+                }
+                else
+                {
+                    op = Operation.Refused;
+                    message = "You are already in " + (Topic) customPacket.Data;
+                }
+            }
+            else
+            {
+                op = Operation.Refused;
+                message = (Topic) customPacket.Data + " does not exists";
+            }
+            
+            return new CustomPacket(op, new InformationMessage(message));
         }
 
         private CustomPacket SendToTopic(CustomPacket customPacket)

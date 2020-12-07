@@ -32,7 +32,7 @@ namespace ClientText.controller
 
                 CustomPacket = Net.rcvMsg(Client.Connection.GetStream());
                 message = GetInformationMessage();
-                if (CustomPacket.OperationOrder == Operation.Reception)
+                if (CustomPacket.Operation == Operation.Reception)
                 {
                     return true;
                 }

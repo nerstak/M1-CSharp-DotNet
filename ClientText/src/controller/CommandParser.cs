@@ -151,7 +151,8 @@ namespace ClientText.controller
             // Creating message
             Message msg = new Message(string.Join(" ", tmp), Client.CurrentUser, r);
             
-            return new CustomPacket(op,msg);
+            var tmpaz = new CustomPacket(op,msg);
+            return tmpaz;
         }
 
         /// <summary>
