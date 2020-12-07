@@ -43,19 +43,19 @@ namespace ClientText.controller
         {
             switch (cmd[0])
             {
-                case "join-topic":
+                case "/join-topic":
                     return ParseTopic(cmd, Operation.JoinTopic);
-                case "leave-topic":
+                case "/leave-topic":
                     return ParseTopic(cmd, Operation.LeaveTopic);
-                case "list-topic":
+                case "/list-topic":
                     return ParseList(cmd);
-                case "create-topic":
-                    return ParseTopic(cmd, Operation.CreateUser);
-                case "pm":
+                case "/create-topic":
+                    return ParseTopic(cmd, Operation.CreateTopic);
+                case "/pm":
                     return ParsePm(cmd, Operation.SendToUser);
-                case "tell":
+                case "/tell":
                     return ParseTell(cmd, Operation.SendToTopic);
-                case "logout":
+                case "/logout":
                     return Logout();
                 default:
                     _message = ERROR_UNKNOWN;
@@ -90,7 +90,7 @@ namespace ClientText.controller
         /// <returns>Packet or null</returns>
         private CustomPacket ParseList(string[] cmd)
         {
-            if (cmd.Length != 1)
+            if (cmd.Length == 1)
             {
                 return new CustomPacket(Operation.ListTopics,null);
             }

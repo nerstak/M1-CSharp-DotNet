@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
+using System.Threading;
 using ClientText.controller;
 using Communication.model;
 using Communication.utils;
@@ -50,6 +51,8 @@ namespace ClientText.view
             EntryLoop();
             if (CurrentUser != null)
             {
+                Thread t = new Thread(new Listener().Loop);
+                t.Start();
                 Chat();
             }
         }
