@@ -39,7 +39,7 @@ namespace Server
             {
                 TcpClient comm = l.AcceptTcpClient();
                 Console.WriteLine("Connection established @" + comm);
-                new Thread(new Receiver(comm).doOperation).Start();
+                new Thread(new Receiver(comm).Listener).Start();
             }
         }
         
