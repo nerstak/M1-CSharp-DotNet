@@ -29,5 +29,10 @@ namespace Communication.model
         {
             get => recipient;
         }
+
+        public override string ToString()
+        {
+            return "[" + sender + " to " + recipient + ": " + content;
+        }
     }
 }
