@@ -19,14 +19,10 @@ namespace Server
             if (Server.TopicList.CheckUserConnectionTopic((Topic) msg.Recipient, msg.Sender))
             {
                 // Sending the message to every user
-                var users = Server.TopicList.SearchTopic((Topic) msg.Recipient).UserList.Users;
-
+                var users = Server.TopicList.SearchTopic((Topic) msg.Recipient).UserList;
                 CustomPacket pck = new CustomPacket(Operation.Reception, msg);
-                foreach (var u in users)
-                {
-                    TcpClient tmp = Server.UserConnections[u];
-                    Net.sendMsg(tmp.GetStream(),pck);
-                }
+                
+                Broadcast(pck, users);
                 
                 return new CustomPacket(Operation.Reception,new InformationMessage("Message sent"));
             }

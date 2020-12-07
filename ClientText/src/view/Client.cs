@@ -72,6 +72,7 @@ namespace ClientText.view
             Thread t = new Thread(new Listener().Loop);
             t.Start();
 
+            Console.Clear();
             ChatInput();
         }
     }

@@ -73,11 +73,50 @@ namespace Server
                 _keepAlive = false;
                 if (_user != null)
                 {
-                    Server.TopicList.RemoveUserFromAll(_user);
-                    Server.ConnectedUsers.RemoveUser(_user);
-                    Server.UserConnections.Remove(_user);
+                    Disconnecting();
                 }
                 Console.WriteLine("Connection lost");
+            }
+        }
+
+        /// <summary>
+        /// Connecting user
+        /// </summary>
+        private void Connecting()
+        {
+            CustomPacket pck = new CustomPacket(Operation.Reception, 
+                new InformationMessage(_user.Username + " is now connected"));
+            Broadcast(pck, Server.ConnectedUsers);
+        }
+
+        /// <summary>
+        /// Disconnecting user
+        /// </summary>
+        private void Disconnecting()
+        {
+            Server.TopicList.RemoveUserFromAll(_user);
+            Server.ConnectedUsers.RemoveUser(_user);
+            Server.UserConnections.Remove(_user);
+            
+            // Disconnect message
+            CustomPacket pck = new CustomPacket(Operation.Reception, 
+                new InformationMessage(_user.Username + " is now offline"));
+            Broadcast(pck, Server.ConnectedUsers);
+        }
+
+        /// <summary>
+        /// Send a packet to every user of a list
+        /// </summary>
+        /// <param name="pck">Packet to send</param>
+        /// <param name="userList">Users concerned</param>
+        private void Broadcast(CustomPacket pck, UserList userList)
+        {
+            var users = userList.Users;
+            
+            foreach (var u in users)
+            {
+                TcpClient tmp = Server.UserConnections[u];
+                Net.sendMsg(tmp.GetStream(),pck);
             }
         }
     }

@@ -51,6 +51,7 @@ namespace Server
                     _user = u;
                     Server.UserConnections.Add(_user,comm);
                     Server.ConnectedUsers.Semaphore.Release();
+                    Connecting();
                     return new CustomPacket(Operation.Reception, new InformationMessage("Connected"));
                 }
 
