@@ -8,6 +8,13 @@ namespace Communication.model
         private String _username;
         private String _password;
 
+        public User() {}
+
+        public User(User u)
+        {
+            this._username = u._username;
+        }
+        
         public string Username
         {
             get => _username;

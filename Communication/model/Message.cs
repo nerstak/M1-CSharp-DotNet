@@ -2,6 +2,7 @@
 
 namespace Communication.model
 {
+    [Serializable]
     public class Message: DataPacket
     {
         private String content;

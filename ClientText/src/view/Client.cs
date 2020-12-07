@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Threading;
 using ClientText.controller;
 using Communication.model;
-using Communication.utils;
 
 namespace ClientText.view
 {
@@ -26,10 +24,16 @@ namespace ClientText.view
 
         public void Start()
         {
-            Connect(hostname, port);
-            Console.Out.WriteLine("Connection established");
-            MainLoop();
-            Close();
+            if (Connect(hostname, port))
+            {
+                Console.Out.WriteLine("Connection established");
+                MainLoop();
+                Close();
+            }
+            else
+            {
+                Console.Out.WriteLine("Connection with the server failed");
+            }
         }
 
         /// <summary>
@@ -40,12 +44,20 @@ namespace ClientText.view
         /// <returns>Integrity of operation</returns>
         public static bool Connect(string hostname, int port)
         {
-            Connection = new TcpClient(hostname, port);
-            return Connection != null;
+            try
+            {
+                Connection = new TcpClient(hostname, port);
+                return Connection != null;
+            }
+            catch (SocketException)
+            {
+                return false;
+            }
         }
 
         public static void Close()
         {
+            CurrentUser = null;
             Connection.Close();
         }
 
@@ -56,44 +68,11 @@ namespace ClientText.view
         {
             EntryLoop();
             if (CurrentUser == null) return;
+
             Thread t = new Thread(new Listener().Loop);
             t.Start();
+
             ChatInput();
-        }
-
-        /// <summary>
-        /// Handle chat inputs
-        /// </summary>
-        private void ChatInput()
-        {
-            while (CurrentUser != null)
-            {
-                CommandParser commandParser = new CommandParser();
-                CustomPacket customPacket = commandParser.ParseCommand(Console.In.ReadLine());
-                if (customPacket == null)
-                {
-                    Console.Out.WriteLine(commandParser.Message);
-                }
-                else
-                {
-                    Send(customPacket);
-                }
-            }
-        }
-
-        private void Send(CustomPacket customPacket)
-        {
-            try
-            {
-                Net.sendMsg(Connection.GetStream(), customPacket);
-            }
-            catch (Exception e)
-            {
-                if (Connection != null)
-                {
-                    Console.Out.WriteLine("Connection error");
-                }
-            }
         }
     }
 }
