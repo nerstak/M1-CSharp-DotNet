@@ -26,9 +26,10 @@ namespace ClientText.view
 
         public void Start()
         {
-            Connect(hostname,port);
+            Connect(hostname, port);
             Console.Out.WriteLine("Connection established");
             MainLoop();
+            Close();
         }
 
         /// <summary>
@@ -39,25 +40,31 @@ namespace ClientText.view
         /// <returns>Integrity of operation</returns>
         public static bool Connect(string hostname, int port)
         {
-            Connection = new TcpClient(hostname,port);
+            Connection = new TcpClient(hostname, port);
             return Connection != null;
         }
-        
+
+        public static void Close()
+        {
+            Connection.Close();
+        }
+
         /// <summary>
         /// Main loop ruling user interaction
         /// </summary>
         private void MainLoop()
         {
             EntryLoop();
-            if (CurrentUser != null)
-            {
-                Thread t = new Thread(new Listener().Loop);
-                t.Start();
-                Chat();
-            }
+            if (CurrentUser == null) return;
+            Thread t = new Thread(new Listener().Loop);
+            t.Start();
+            ChatInput();
         }
 
-        private void Chat()
+        /// <summary>
+        /// Handle chat inputs
+        /// </summary>
+        private void ChatInput()
         {
             while (CurrentUser != null)
             {
@@ -69,7 +76,22 @@ namespace ClientText.view
                 }
                 else
                 {
-                    Net.sendMsg(Connection.GetStream(), customPacket);
+                    Send(customPacket);
+                }
+            }
+        }
+
+        private void Send(CustomPacket customPacket)
+        {
+            try
+            {
+                Net.sendMsg(Connection.GetStream(), customPacket);
+            }
+            catch (Exception e)
+            {
+                if (Connection != null)
+                {
+                    Console.Out.WriteLine("Connection error");
                 }
             }
         }

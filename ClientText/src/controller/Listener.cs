@@ -14,9 +14,19 @@ namespace ClientText.controller
         {
             while (Client.CurrentUser != null)
             {
-                CustomPacket customPacket = Net.rcvMsg(Client.Connection.GetStream());
-                if(customPacket == null) continue;
-                Console.Out.WriteLine(customPacket.ToString());
+                try
+                {
+                    CustomPacket customPacket = Net.rcvMsg(Client.Connection.GetStream());
+                    if(customPacket == null) continue;
+                    Console.Out.WriteLine(customPacket.ToString());
+                }
+                catch (Exception e)
+                {
+                    if (Client.Connection != null)
+                    {
+                        Console.Out.WriteLine("Connection error");
+                    }
+                }
             }
         }
     }
