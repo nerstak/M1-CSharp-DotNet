@@ -26,10 +26,17 @@ namespace ClientText.view
 
         public void Start()
         {
-            Connect(hostname, port);
-            Console.Out.WriteLine("Connection established");
-            MainLoop();
-            Close();
+            if (Connect(hostname, port))
+            {
+                Console.Out.WriteLine("Connection established");
+                MainLoop();
+                Close();
+            }
+            else
+            {
+                Console.Out.WriteLine("Connection with the server failed");
+            }
+            
         }
 
         /// <summary>
@@ -40,12 +47,20 @@ namespace ClientText.view
         /// <returns>Integrity of operation</returns>
         public static bool Connect(string hostname, int port)
         {
-            Connection = new TcpClient(hostname, port);
-            return Connection != null;
+            try
+            {
+                Connection = new TcpClient(hostname, port);
+                return Connection != null;
+            }
+            catch (SocketException)
+            {
+                return false;
+            }
         }
 
         public static void Close()
         {
+            CurrentUser = null;
             Connection.Close();
         }
 
