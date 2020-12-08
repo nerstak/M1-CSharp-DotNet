@@ -58,7 +58,7 @@ namespace Server.model
         {
             var connectTopic = SearchTopic(t);
 
-            if(connectTopic?.SearchUsername(u.Username) != null)
+            if(connectTopic?.SearchUser(u.Username) != null)
             {
                 return true;
             }

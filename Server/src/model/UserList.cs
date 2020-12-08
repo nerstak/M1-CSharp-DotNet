@@ -1,11 +1,13 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
-using System.Net.Sockets;
 using System.Threading;
 using Communication.utils;
 
 namespace Communication.model
 {
+    /// <summary>
+    /// List of users
+    /// </summary>
     public class UserList
     {
         private List<User> _users;
@@ -31,7 +33,7 @@ namespace Communication.model
         /// </summary>
         /// <param name="username">User to search</param>
         /// <returns>User, may be null</returns>
-        public User SearchUsername(string username)
+        public User SearchUser(string username)
         {
             return _users?.Find(u => username.Equals(u.Username));
         }
@@ -80,7 +82,7 @@ namespace Communication.model
         /// <param name="username">User to remove</param>
         public void RemoveUser(string username)
         {
-            _users.Remove(SearchUsername(username));
+            _users.Remove(SearchUser(username));
         }
 
         /// <summary>

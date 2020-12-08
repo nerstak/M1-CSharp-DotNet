@@ -38,7 +38,7 @@ namespace Server
         {
             Message msg = (Message) customPacket.Data;
 
-            User recipient = Server.ConnectedUsers.SearchUsername(((User) msg.Recipient).Username);
+            User recipient = Server.ConnectedUsers.SearchUser(((User) msg.Recipient).Username);
             
             // Checking if receiving user is connected
             if (recipient != null) ;
