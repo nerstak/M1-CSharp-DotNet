@@ -49,8 +49,9 @@ namespace Server
                     Server.ConnectedUsers.Semaphore.WaitOne();
                     Server.ConnectedUsers.AddUser(u);
                     _user = u;
-                    Server.UserConnections.Add(_user,comm);
+                    Server.TcpClients.Add(_user,comm);
                     Server.ConnectedUsers.Semaphore.Release();
+                    Connecting();
                     return new CustomPacket(Operation.Reception, new InformationMessage("Connected"));
                 }
 

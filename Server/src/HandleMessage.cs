@@ -1,5 +1,4 @@
-﻿using System.Net.Sockets;
-using Communication.model;
+﻿using Communication.model;
 using Communication.utils;
 
 namespace Server
@@ -19,16 +18,12 @@ namespace Server
             if (Server.TopicList.CheckUserConnectionTopic((Topic) msg.Recipient, msg.Sender))
             {
                 // Sending the message to every user
-                var users = Server.TopicList.SearchTopic((Topic) msg.Recipient).UserList.Users;
-
+                var users = Server.TopicList.List[(Topic) msg.Recipient];
                 CustomPacket pck = new CustomPacket(Operation.Reception, msg);
-                foreach (var u in users)
-                {
-                    TcpClient tmp = Server.UserConnections[u];
-                    Net.sendMsg(tmp.GetStream(),pck);
-                }
                 
-                return new CustomPacket(Operation.Reception,new InformationMessage("Message sent"));
+                Broadcast(pck, users);
+                
+                return new CustomPacket(Operation.Reception,null);
             }
             
             return new CustomPacket(Operation.Refused, new InformationMessage("You are not connected to " + (Topic) msg.Recipient));
@@ -43,7 +38,7 @@ namespace Server
         {
             Message msg = (Message) customPacket.Data;
 
-            User recipient = Server.ConnectedUsers.SearchUsername(((User) msg.Recipient).Username);
+            User recipient = Server.ConnectedUsers.SearchUser(((User) msg.Recipient).Username);
             
             // Checking if receiving user is connected
             if (recipient != null) ;
@@ -51,10 +46,10 @@ namespace Server
                 // Sending the message to both users
                 CustomPacket pck = new CustomPacket(Operation.Reception, msg);
                 
-                Net.sendMsg(Server.UserConnections[recipient].GetStream(),pck);
+                Net.sendMsg(Server.TcpClients[recipient].GetStream(),pck);
                 Net.sendMsg(comm.GetStream(),pck);
                 
-                return new CustomPacket(Operation.Reception,new InformationMessage("Message sent"));
+                return new CustomPacket(Operation.Reception,null);
             }
             
             return new CustomPacket(Operation.Refused, new InformationMessage("You are not connected to " + (Topic) msg.Recipient));

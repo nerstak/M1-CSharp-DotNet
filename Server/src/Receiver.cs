@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net.Sockets;
 using Communication.utils;
 using Communication.model;
@@ -7,6 +6,9 @@ using Server.model;
 
 namespace Server
 {
+    /// <summary>
+    /// Receiver class is dedicated to handling actions of only one user (one user per thread)
+    /// </summary>
     public partial class Receiver
     {
         private TcpClient comm;
@@ -31,6 +33,7 @@ namespace Server
                     CustomPacket toSend = null;
                     if (_user == null)
                     {
+                        // Actions for non logged users
                         switch (customPacket.Operation)
                         {
                             case Operation.CreateUser:
@@ -43,6 +46,7 @@ namespace Server
                     }
                     else
                     {
+                        // Actions for logged in users
                         switch (customPacket.Operation)
                         {
                             case Operation.ListTopics:
@@ -71,13 +75,54 @@ namespace Server
             {
                 // If we have trouble, we disconnect the user
                 _keepAlive = false;
+                string message = "Connection lost";
                 if (_user != null)
                 {
-                    Server.TopicList.RemoveUserFromAll(_user);
-                    Server.ConnectedUsers.RemoveUser(_user);
-                    Server.UserConnections.Remove(_user);
+                    message += " with " + _user;
+                    Disconnecting();
                 }
-                Console.WriteLine("Connection lost");
+                Console.WriteLine(message);
+            }
+        }
+
+        /// <summary>
+        /// Connecting user
+        /// </summary>
+        private void Connecting()
+        {
+            CustomPacket pck = new CustomPacket(Operation.Reception, 
+                new InformationMessage(_user.Username + " is now connected"));
+            Broadcast(pck, Server.ConnectedUsers);
+        }
+
+        /// <summary>
+        /// Disconnecting user
+        /// </summary>
+        private void Disconnecting()
+        {
+            Server.TopicList.RemoveUserFromAll(_user);
+            Server.ConnectedUsers.RemoveUser(_user);
+            Server.TcpClients.Remove(_user);
+            
+            // Disconnect message
+            CustomPacket pck = new CustomPacket(Operation.Reception, 
+                new InformationMessage(_user.Username + " is now offline"));
+            Broadcast(pck, Server.ConnectedUsers);
+        }
+
+        /// <summary>
+        /// Send a packet to every user of a list
+        /// </summary>
+        /// <param name="pck">Packet to send</param>
+        /// <param name="userList">Users concerned</param>
+        private void Broadcast(CustomPacket pck, UserList userList)
+        {
+            var users = userList.Users;
+            
+            foreach (var u in users)
+            {
+                TcpClient tmp = Server.TcpClients[u];
+                Net.sendMsg(tmp.GetStream(),pck);
             }
         }
     }

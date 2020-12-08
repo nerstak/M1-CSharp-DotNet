@@ -1,7 +1,7 @@
 ﻿namespace Communication.model
 {
-    public interface Recipient
-    {
-        
-    }
+    /// <summary>
+    /// Interface for Objects that can receive messages
+    /// </summary>
+    public interface IRecipient {}
 }

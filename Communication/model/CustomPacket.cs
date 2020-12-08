@@ -2,17 +2,20 @@
 
 namespace Communication.model
 {
+    /// <summary>
+    /// Custom Packet, that encapsulate data sent
+    /// </summary>
     [Serializable]
     public class CustomPacket
     {
         private Operation _operation;
-        private DataPacket _data;
+        private IDataPacket _data;
 
         public Operation Operation => _operation;
 
-        public DataPacket Data => _data;
+        public IDataPacket Data => _data;
 
-        public CustomPacket(Operation operationOrder, DataPacket data)
+        public CustomPacket(Operation operationOrder, IDataPacket data)
         {
             this._operation = operationOrder;
             this._data = data;

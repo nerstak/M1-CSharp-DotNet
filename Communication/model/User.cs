@@ -2,8 +2,11 @@
 
 namespace Communication.model
 {
+    /// <summary>
+    /// User
+    /// </summary>
     [Serializable]
-    public class User: DataPacket, Recipient
+    public class User: IDataPacket, IRecipient
     {
         private String _username;
         private String _password;
@@ -12,7 +15,7 @@ namespace Communication.model
 
         public User(User u)
         {
-            this._username = u._username;
+            _username = u._username;
         }
         
         public string Username

@@ -2,6 +2,9 @@
 
 namespace Communication.model
 {
+    /// <summary>
+    /// Enumeration of actions possible, or responses
+    /// </summary>
     [Serializable]
     public enum Operation
     {

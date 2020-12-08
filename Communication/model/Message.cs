@@ -2,38 +2,41 @@
 
 namespace Communication.model
 {
+    /// <summary>
+    /// Message sent from an user to topic or usre
+    /// </summary>
     [Serializable]
-    public class Message: DataPacket
+    public class Message: IDataPacket
     {
-        private String content;
-        private User sender; // Only an user can send a message
-        private Recipient recipient;
+        private String _content;
+        private User _sender; // Only an user can send a message
+        private IRecipient _recipient;
 
-        public Message(string content, User sender, Recipient recipient)
+        public Message(string content, User sender, IRecipient recipient)
         {
-            this.content = content;
-            this.sender = sender;
-            this.recipient = recipient;
+            _content = content;
+            _sender = sender;
+            _recipient = recipient;
         }
 
         public string Content
         {
-            get => content;
+            get => _content;
         }
 
         public User Sender
         {
-            get => sender;
+            get => _sender;
         }
 
-        public Recipient Recipient
+        public IRecipient Recipient
         {
-            get => recipient;
+            get => _recipient;
         }
 
         public override string ToString()
         {
-            return sender + " to " + recipient + ": " + content;
+            return _sender + " to " + _recipient + ": " + _content;
         }
     }
 }
