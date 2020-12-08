@@ -2,8 +2,11 @@
 
 namespace Communication.model
 {
+    /// <summary>
+    /// Information message
+    /// </summary>
     [Serializable]
-    public class InformationMessage: DataPacket
+    public class InformationMessage: IDataPacket
     {
         private string content;
 

@@ -1,4 +1,5 @@
 ﻿using Communication.model;
+using Server.model;
 
 namespace Server
 {

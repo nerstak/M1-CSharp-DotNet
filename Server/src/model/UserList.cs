@@ -1,9 +1,10 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using Communication.model;
 using Communication.utils;
 
-namespace Communication.model
+namespace Server.model
 {
     /// <summary>
     /// List of users

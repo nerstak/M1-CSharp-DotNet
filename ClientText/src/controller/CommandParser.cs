@@ -142,7 +142,7 @@ namespace ClientText.controller
         /// <param name="op">Operation</param>
         /// <param name="r">Recipient</param>
         /// <returns>Custom Packet</returns>
-        private CustomPacket ParseMessage(string[] cmd, Operation op, Recipient r)
+        private CustomPacket ParseMessage(string[] cmd, Operation op, IRecipient r)
         {
             // Recovering message
             List<string> tmp = cmd.ToList();

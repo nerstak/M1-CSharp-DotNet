@@ -2,6 +2,7 @@
 using System.Net.Sockets;
 using Communication.utils;
 using Communication.model;
+using Server.model;
 
 namespace Server
 {
