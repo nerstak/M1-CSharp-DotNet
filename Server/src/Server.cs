@@ -8,13 +8,16 @@ using Server.model;
 
 namespace Server
 {
+    /// <summary>
+    /// Server Class
+    /// </summary>
     public class Server
     {
-        private int port;
+        private readonly int port;
         private static UserList _allUsers;
-        private static UserList _connectedUsers = new UserList();
-        private static ConnectedUsersTopicList _topicList = new ConnectedUsersTopicList();
-        public static Dictionary<User, TcpClient> UserConnections = new Dictionary<User, TcpClient>();
+        private static readonly UserList _connectedUsers = new UserList();
+        private static readonly ConnectedUsersTopicList _topicList = new ConnectedUsersTopicList();
+        public static readonly Dictionary<User, TcpClient> TcpClients = new Dictionary<User, TcpClient>();
 
         public static ConnectedUsersTopicList TopicList => _topicList;
 
@@ -30,6 +33,9 @@ namespace Server
             _allUsers.LoadUsers();
         }
 
+        /// <summary>
+        /// Accept new connections to the server
+        /// </summary>
         public void Start()
         {
             TcpListener l = new TcpListener(new IPAddress(new byte[] {127, 0, 0, 1}), port);
@@ -42,7 +48,5 @@ namespace Server
                 new Thread(new Receiver(comm).Listener).Start();
             }
         }
-        
-        
     }
 }

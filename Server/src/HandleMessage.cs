@@ -1,5 +1,4 @@
-﻿using System.Net.Sockets;
-using Communication.model;
+﻿using Communication.model;
 using Communication.utils;
 
 namespace Server
@@ -47,7 +46,7 @@ namespace Server
                 // Sending the message to both users
                 CustomPacket pck = new CustomPacket(Operation.Reception, msg);
                 
-                Net.sendMsg(Server.UserConnections[recipient].GetStream(),pck);
+                Net.sendMsg(Server.TcpClients[recipient].GetStream(),pck);
                 Net.sendMsg(comm.GetStream(),pck);
                 
                 return new CustomPacket(Operation.Reception,new InformationMessage("Message sent"));
