@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Communication.model
 {
+    /// <summary>
+    /// List of topics
+    /// </summary>
     [Serializable]
-    public class TopicList: DataPacket
+    public class TopicList: IDataPacket
     {
         private List<Topic> _list = new List<Topic>();
 

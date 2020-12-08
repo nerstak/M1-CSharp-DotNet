@@ -1,6 +1,7 @@
 ﻿namespace Communication.model
 {
-    public interface DataPacket
-    {
-    }
+    /// <summary>
+    /// Interface for all data are sent on network
+    /// </summary>
+    public interface IDataPacket {}
 }

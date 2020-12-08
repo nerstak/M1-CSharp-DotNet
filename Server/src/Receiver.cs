@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net.Sockets;
 using Communication.utils;
 using Communication.model;
@@ -7,6 +6,9 @@ using Server.model;
 
 namespace Server
 {
+    /// <summary>
+    /// Receiver class is dedicated to handling actions of only one user (one user per thread)
+    /// </summary>
     public partial class Receiver
     {
         private TcpClient comm;
@@ -31,6 +33,7 @@ namespace Server
                     CustomPacket toSend = null;
                     if (_user == null)
                     {
+                        // Actions for non logged users
                         switch (customPacket.Operation)
                         {
                             case Operation.CreateUser:
@@ -43,6 +46,7 @@ namespace Server
                     }
                     else
                     {
+                        // Actions for logged in users
                         switch (customPacket.Operation)
                         {
                             case Operation.ListTopics:
@@ -71,11 +75,13 @@ namespace Server
             {
                 // If we have trouble, we disconnect the user
                 _keepAlive = false;
+                string message = "Connection lost";
                 if (_user != null)
                 {
+                    message += " with " + _user;
                     Disconnecting();
                 }
-                Console.WriteLine("Connection lost");
+                Console.WriteLine(message);
             }
         }
 
@@ -96,7 +102,7 @@ namespace Server
         {
             Server.TopicList.RemoveUserFromAll(_user);
             Server.ConnectedUsers.RemoveUser(_user);
-            Server.UserConnections.Remove(_user);
+            Server.TcpClients.Remove(_user);
             
             // Disconnect message
             CustomPacket pck = new CustomPacket(Operation.Reception, 
@@ -115,7 +121,7 @@ namespace Server
             
             foreach (var u in users)
             {
-                TcpClient tmp = Server.UserConnections[u];
+                TcpClient tmp = Server.TcpClients[u];
                 Net.sendMsg(tmp.GetStream(),pck);
             }
         }

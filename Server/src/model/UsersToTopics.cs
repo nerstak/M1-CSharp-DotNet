@@ -4,23 +4,31 @@ using Communication.model;
 
 namespace Server.model
 {
-    public class ConnectedUsersTopicList
+    /// <summary>
+    /// List all topics, and users connected to themo
+    /// </summary>
+    public class UsersToTopics
     {
         private readonly Semaphore _semaphore = new Semaphore(1,1);
-        private readonly List<ConnectedUsersTopic> _list = new List<ConnectedUsersTopic>();
+        private readonly Dictionary<Topic, UserList> _list = new Dictionary<Topic, UserList>();
 
         public Semaphore Semaphore => _semaphore;
 
-        public List<ConnectedUsersTopic> List => _list;
+        public Dictionary<Topic, UserList> List => _list;
 
         /// <summary>
         /// Search for a Topic
         /// </summary>
-        /// <param name="topic"></param>
-        /// <returns></returns>
-        public ConnectedUsersTopic SearchTopic(Topic topic)
+        /// <param name="topic">Topic</param>
+        /// <returns>Userlist or null</returns>
+        public UserList SearchTopic(Topic topic)
         {
-            return _list.Find(t => t.Topic.Equals(topic));
+            if (_list.ContainsKey(topic))
+            {
+                return _list[topic];
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -33,7 +41,7 @@ namespace Server.model
             var topics = new TopicList();
             foreach (var cut in _list)
             {
-                topics.List.Add(cut.Topic);
+                topics.List.Add(cut.Key);
             }
 
             _semaphore.Release();
@@ -50,7 +58,7 @@ namespace Server.model
         {
             var connectTopic = SearchTopic(t);
 
-            if (connectTopic?.UserList.SearchUsername(u.Username) != null)
+            if(connectTopic?.SearchUser(u.Username) != null)
             {
                 return true;
             }
@@ -66,7 +74,7 @@ namespace Server.model
         {
             foreach (var topic in _list)
             {
-                topic.UserList.RemoveUser(u);
+                topic.Value.RemoveUser(u);
             }
         }
     }

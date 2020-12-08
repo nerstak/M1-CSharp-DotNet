@@ -2,14 +2,17 @@
 
 namespace Communication.model
 {
+    /// <summary>
+    /// Topic class
+    /// </summary>
     [Serializable]
-    public class Topic: DataPacket, Recipient
+    public class Topic: IDataPacket, IRecipient
     {
         private readonly String _name;
 
         public Topic(String name)
         {
-            this._name = name;
+            _name = name;
         }
 
         public string Name => _name;
