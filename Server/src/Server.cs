@@ -16,10 +16,10 @@ namespace Server
         private readonly int port;
         private static UserList _allUsers;
         private static readonly UserList _connectedUsers = new UserList();
-        private static readonly ConnectedUsersTopicList _topicList = new ConnectedUsersTopicList();
+        private static readonly UsersToTopics _topicList = new UsersToTopics();
         public static readonly Dictionary<User, TcpClient> TcpClients = new Dictionary<User, TcpClient>();
 
-        public static ConnectedUsersTopicList TopicList => _topicList;
+        public static UsersToTopics TopicList => _topicList;
 
         public static UserList AllUsers => _allUsers;
         public static UserList ConnectedUsers => _connectedUsers;

@@ -15,8 +15,7 @@ namespace Server
             Server.TopicList.Semaphore.WaitOne();
             if (Server.TopicList.SearchTopic(t) == null)
             {
-                var connectedUsersTopic = new ConnectedUsersTopic(t);
-                Server.TopicList.List.Add(connectedUsersTopic);
+                Server.TopicList.List.Add(t,new UserList());
                 Server.TopicList.Semaphore.Release();
                 return new CustomPacket(Operation.Reception, new InformationMessage("Topic created"));
             }
@@ -52,9 +51,9 @@ namespace Server
             if (topicList != null)
             {
                 // We check if the user can join this topic
-                if (topicList.UserList.SearchUser(_user) == null)
+                if (topicList.SearchUser(_user) == null)
                 {
-                    topicList.UserList.AddUser(_user);
+                    topicList.AddUser(_user);
                 }
                 else
                 {
