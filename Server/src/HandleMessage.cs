@@ -23,7 +23,7 @@ namespace Server
                 
                 Broadcast(pck, users);
                 
-                return new CustomPacket(Operation.Reception,new InformationMessage("Message sent"));
+                return new CustomPacket(Operation.Reception,null);
             }
             
             return new CustomPacket(Operation.Refused, new InformationMessage("You are not connected to " + (Topic) msg.Recipient));
@@ -49,7 +49,7 @@ namespace Server
                 Net.sendMsg(Server.TcpClients[recipient].GetStream(),pck);
                 Net.sendMsg(comm.GetStream(),pck);
                 
-                return new CustomPacket(Operation.Reception,new InformationMessage("Message sent"));
+                return new CustomPacket(Operation.Reception,null);
             }
             
             return new CustomPacket(Operation.Refused, new InformationMessage("You are not connected to " + (Topic) msg.Recipient));
