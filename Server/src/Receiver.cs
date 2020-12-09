@@ -58,6 +58,9 @@ namespace Server
                             case Operation.JoinTopic:
                                 toSend = JoinTopic(customPacket);
                                 break;
+                            case Operation.LeaveTopic:
+                                toSend = LeaveTopic(customPacket);
+                                break;
                             case Operation.SendToTopic:
                                 toSend = SendToTopic(customPacket);
                                 break;
@@ -67,8 +70,11 @@ namespace Server
                         }
                         
                     }
-                    
-                    Net.sendMsg(comm.GetStream(),toSend);
+
+                    if (toSend != null)
+                    {
+                        Net.sendMsg(comm.GetStream(),toSend);
+                    }
                 }
             }
             catch (Exception)
