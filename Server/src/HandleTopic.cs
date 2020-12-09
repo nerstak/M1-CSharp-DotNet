@@ -70,5 +70,39 @@ namespace Server
             
             return new CustomPacket(op, new InformationMessage(message));
         }
+        
+        /// <summary>
+        /// Leave a topic
+        /// </summary>
+        /// <param name="customPacket">Packet received</param>
+        /// <returns>Packet to send</returns>
+        private CustomPacket LeaveTopic(CustomPacket customPacket)
+        {
+            Operation op = Operation.Reception;
+            string message = "Disconnected from topic " + (Topic) customPacket.Data;
+            var topicList = Server.TopicList.SearchTopic((Topic) customPacket.Data);
+            
+            // We check if the topic exist
+            if (topicList != null)
+            {
+                // We check if the user can join this topic
+                if (topicList.SearchUser(_user) != null)
+                {
+                    topicList.RemoveUser(_user);
+                }
+                else
+                {
+                    op = Operation.Refused;
+                    message = "You are not in " + (Topic) customPacket.Data;
+                }
+            }
+            else
+            {
+                op = Operation.Refused;
+                message = (Topic) customPacket.Data + " does not exists";
+            }
+            
+            return new CustomPacket(op, new InformationMessage(message));
+        }
     }
 }
