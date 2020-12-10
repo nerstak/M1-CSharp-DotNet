@@ -35,7 +35,7 @@
     </PropertyGroup>
     <ItemGroup>
         <Reference Include="Communication, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\..\Communication\bin\Debug\netcoreapp3.1\Communication.dll</HintPath>
+          <HintPath>..\..\Communication\bin\Debug\net472\Communication.dll</HintPath>
         </Reference>
         <Reference Include="System" />
         <Reference Include="System.Core" />
@@ -53,7 +53,8 @@
             <Generator>MSBuild:Compile</Generator>
             <SubType>Designer</SubType>
         </ApplicationDefinition>
-        <Page Include="MainWindow.xaml">
+        <Page Include="ChatWindow.xaml" />
+        <Page Include="LoginWindow.xaml">
             <Generator>MSBuild:Compile</Generator>
             <SubType>Designer</SubType>
         </Page>
@@ -61,12 +62,16 @@
             <DependentUpon>App.xaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
-        <Compile Include="MainWindow.xaml.cs">
-            <DependentUpon>MainWindow.xaml</DependentUpon>
+        <Compile Include="ChatWindow.xaml.cs">
+          <DependentUpon>ChatWindow.xaml</DependentUpon>
+        </Compile>
+        <Compile Include="LoginWindow.xaml.cs">
+            <DependentUpon>LoginWindow.xaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="MenuActions.cs" />
         <Compile Include="Properties\AssemblyInfo.cs">
             <SubType>Code</SubType>
         </Compile>
