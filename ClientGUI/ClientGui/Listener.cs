@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Sockets;
 using System.Threading;
 using System.Windows;
 using Communication.model;
@@ -13,9 +14,9 @@ namespace ClientGUI
         /// <summary>
         /// Loop handling listener
         /// </summary>
-        public void Loop()
+        private void Loop()
         {
-            while (_user != null && Connection != null)
+            while (CurrentUser != null && Connection != null)
             {
                 try
                 {
@@ -32,7 +33,7 @@ namespace ClientGUI
                     // If the client connection is null, it means that there has been a logout
                     if (Connection != null)
                     {
-                        if (_user != null)
+                        if (CurrentUser != null)
                         {
                             AddLineChat("Connection error");
                         }
@@ -52,6 +53,8 @@ namespace ClientGUI
             if (_connectTry == 5)
             {
                 Connection.Close();
+                Connection = null;
+                MessageBox.Show("Connection with the server failed", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             } 
             _connectTry++;
         }
