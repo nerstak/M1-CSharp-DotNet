@@ -1,5 +1,6 @@
 ﻿using System.Net.Sockets;
 using System.Windows;
+using ClientGUI;
 using Communication.model;
 
 namespace ClientGui
@@ -42,6 +43,8 @@ namespace ClientGui
             if (new MenuActions().HandleUser(_user, out var msg, MenuActions.LoginUserPacket))
             {
                 // Load window
+                new ChatWindow(_user,Connection).Show();
+                this.Close();
             }
             else
             {
