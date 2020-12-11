@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ClientGui"
         mc:Ignorable="d"
+        ResizeMode="NoResize"
         Title="MainWindow" Height="200" Width="350">
     <Grid>
         <Grid.RowDefinitions>
