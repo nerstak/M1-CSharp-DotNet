@@ -6,7 +6,7 @@ namespace Communication.model
     /// User
     /// </summary>
     [Serializable]
-    public class User: IDataPacket, IRecipient
+    public class User: IDataPacket, IRecipient, IEquatable<User>
     {
         private String _username;
         private String _password;
@@ -37,20 +37,59 @@ namespace Communication.model
 
         public override bool Equals(object obj)
         {
-            //Check for null and compare run-time types.
-            if ((obj == null) || this.GetType() != obj.GetType())
+            return this.Equals(obj as User);
+        }
+
+        public bool Equals(User other)
+        {
+            // Check for null obj
+            if (Object.ReferenceEquals(other, null))
             {
                 return false;
             }
-            else
+
+            // Optimization for common success case
+            if (object.ReferenceEquals(this, other))
             {
-                return Equals((User) obj);
+                return true;
             }
+
+            // Checking runtime type
+            if (this.GetType() != other.GetType())
+            {
+                return false;
+            }
+            
+            // Return true if fields match
+            return (_username == other._username) && (_password == other._password);
         }
 
-        protected bool Equals(User other)
+        public static bool operator ==(User lhs, User rhs)
         {
-            return _username == other._username && _password == other._password;
+            // Check for null on left side.
+            if (object.ReferenceEquals(lhs, null))
+            {
+                if (object.ReferenceEquals(rhs, null))
+                {
+                    // null == null = true.
+                    return true;
+                }
+
+                // Only the left side is null.
+                return false;
+            }
+            // Equals handles case of null on right side.
+            return lhs.Equals(rhs);
+        }
+
+        public static bool operator !=(User lhs, User rhs)
+        {
+            return !(lhs == rhs);
+        }
+
+        public override int GetHashCode()
+        {
+            return (_username != null ? _username.GetHashCode() : 0);
         }
     }
 }

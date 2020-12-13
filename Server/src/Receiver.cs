@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Sockets;
-using Communication.utils;
 using Communication.model;
+using Communication.utils;
 using Server.model;
 
 namespace Server
@@ -68,12 +68,11 @@ namespace Server
                                 toSend = SendToUser(customPacket);
                                 break;
                         }
-                        
                     }
 
                     if (toSend != null)
                     {
-                        Net.sendMsg(comm.GetStream(),toSend);
+                        Net.sendMsg(comm.GetStream(), toSend);
                     }
                 }
             }
@@ -87,6 +86,7 @@ namespace Server
                     message += " with " + _user;
                     Disconnecting();
                 }
+
                 Console.WriteLine(message);
             }
         }
@@ -96,7 +96,7 @@ namespace Server
         /// </summary>
         private void Connecting()
         {
-            CustomPacket pck = new CustomPacket(Operation.Reception, 
+            CustomPacket pck = new CustomPacket(Operation.Reception,
                 new InformationMessage(_user.Username + " is now connected"));
             Broadcast(pck, Server.ConnectedUsers);
         }
@@ -109,9 +109,9 @@ namespace Server
             Server.TopicList.RemoveUserFromAll(_user);
             Server.ConnectedUsers.RemoveUser(_user);
             Server.TcpClients.Remove(_user);
-            
+
             // Disconnect message
-            CustomPacket pck = new CustomPacket(Operation.Reception, 
+            CustomPacket pck = new CustomPacket(Operation.Reception,
                 new InformationMessage(_user.Username + " is now offline"));
             Broadcast(pck, Server.ConnectedUsers);
         }
@@ -124,11 +124,11 @@ namespace Server
         private void Broadcast(CustomPacket pck, UserList userList)
         {
             var users = userList.Users;
-            
+
             foreach (var u in users)
             {
                 TcpClient tmp = Server.TcpClients[u];
-                Net.sendMsg(tmp.GetStream(),pck);
+                Net.sendMsg(tmp.GetStream(), pck);
             }
         }
     }

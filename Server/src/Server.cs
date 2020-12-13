@@ -25,7 +25,6 @@ namespace Server
         public static UserList ConnectedUsers => _connectedUsers;
 
 
-
         public Server(int port)
         {
             this.port = port;
