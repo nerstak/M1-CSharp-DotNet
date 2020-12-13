@@ -13,12 +13,12 @@ namespace ClientGUI
     public partial class ChatWindow : Window
     {
         public static User CurrentUser = null;
-        public static TcpClient Connection = null;
+        private static TcpClient _connection = null;
 
         public ChatWindow(User currentUser, TcpClient tcpClient)
         {
             CurrentUser = currentUser;
-            Connection = tcpClient;
+            _connection = tcpClient;
             InitializeComponent();
             ChatTextBlock.Text = "";
             new Thread(Loop).Start();
@@ -37,19 +37,30 @@ namespace ClientGUI
 
         protected override void OnClosing(CancelEventArgs e)
         {
-            Connection.Close();
+            _connection.Close();
             CurrentUser = null;
             base.OnClosing(e);
         }
 
+        /// <summary>
+        /// Handle event when Enter key is used
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="e">Event</param>
         private void OnKeyDownHandler(object sender, KeyEventArgs e)
         {
+            // We do something only if the enter key is down
             if (e.Key == Key.Return)
             {
                 HandleInput();
             }
         }
 
+        /// <summary>
+        /// Handle click on Send button
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="e">Event</param>
         private void OnClick(object sender, RoutedEventArgs e)
         {
             HandleInput();
@@ -62,7 +73,7 @@ namespace ClientGUI
         {
             CommandParser commandParser = new CommandParser();
             CustomPacket customPacket = commandParser.ParseCommand(InputBox.Text);
-                
+
             if (customPacket == null)
             {
                 // Displaying errors
@@ -75,12 +86,14 @@ namespace ClientGUI
             }
 
             InputBox.Text = "";
+
+            // Handling logout
             if (CurrentUser == null)
             {
                 this.Close();
             }
         }
-        
+
         /// <summary>
         /// Send data to server
         /// </summary>
@@ -90,14 +103,15 @@ namespace ClientGUI
             try
             {
                 // Sending
-                Net.sendMsg(Connection.GetStream(), customPacket);
+                Net.sendMsg(_connection.GetStream(), customPacket);
             }
             catch (Exception)
             {
                 // Fail
-                if (Connection != null)
+                if (_connection != null)
                 {
-                    MessageBox.Show("Connection with the server failed", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Connection with the server failed", "Error", MessageBoxButton.OK,
+                        MessageBoxImage.Error);
                 }
             }
         }

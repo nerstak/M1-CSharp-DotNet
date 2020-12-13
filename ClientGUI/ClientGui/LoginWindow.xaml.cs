@@ -10,11 +10,11 @@ namespace ClientGui
     /// </summary>
     public partial class LoginWindow : Window
     {
-        private User _user = null;
+        private readonly User _user = null;
         public static TcpClient Connection = null;
-        
-        private string hostname = "127.0.0.1";
-        private int port = 8976;
+
+        private const string Hostname = "127.0.0.1";
+        private const int Port = 8976;
 
 
         public LoginWindow()
@@ -24,30 +24,46 @@ namespace ClientGui
             _user = new User();
         }
 
+        /// <summary>
+        /// Handle click on Create button
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="e">Event</param>
         private void CreateAccountButton_OnClick(object sender, RoutedEventArgs e)
         {
             FillUser();
+
             if (new MenuActions().HandleUser(_user, out var msg, MenuActions.CreateUserPacket))
             {
+                // Done
                 MessageBox.Show(msg, "Information", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
             {
+                // Error
                 MessageBox.Show(msg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
+        /// <summary>
+        /// Handle click on Login button
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="e">Event</param>
         private void LoginButton_OnClick(object sender, RoutedEventArgs e)
         {
             FillUser();
+
+
             if (new MenuActions().HandleUser(_user, out var msg, MenuActions.LoginUserPacket))
             {
                 // Load window
-                new ChatWindow(_user,Connection).Show();
+                new ChatWindow(_user, Connection).Show();
                 this.Close();
             }
             else
             {
+                // Error
                 MessageBox.Show(msg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -60,7 +76,7 @@ namespace ClientGui
             _user.Username = UsernameText.Text;
             _user.Password = PasswordText.Text;
         }
-        
+
         /// <summary>
         /// Handle starting connection
         /// </summary>
@@ -68,7 +84,8 @@ namespace ClientGui
         {
             if (!Connect())
             {
-                MessageBox.Show("Connection with the server failed", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Connection with the server failed", "Error", MessageBoxButton.OK,
+                    MessageBoxImage.Error);
                 this.Close();
             }
         }
@@ -81,7 +98,7 @@ namespace ClientGui
         {
             try
             {
-                Connection = new TcpClient(hostname, port);
+                Connection = new TcpClient(Hostname, Port);
                 return Connection != null;
             }
             catch (SocketException)
