@@ -11,7 +11,7 @@ namespace ClientText.view
         /// <summary>
         /// Loop for logged out user
         /// </summary>
-        public void EntryLoop()
+        private void EntryLoop()
         {
             bool leave = false;
             do
