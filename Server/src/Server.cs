@@ -13,7 +13,7 @@ namespace Server
     /// </summary>
     public class Server
     {
-        private readonly int port;
+        private readonly int _port;
         private static UserList _allUsers;
         private static readonly UserList _connectedUsers = new UserList();
         private static readonly UsersToTopics _topicList = new UsersToTopics();
@@ -27,7 +27,7 @@ namespace Server
 
         public Server(int port)
         {
-            this.port = port;
+            this._port = port;
             _allUsers = new UserList(@"..\..\..\savedFiles\users.bin");
             _allUsers.LoadUsers();
         }
@@ -37,7 +37,7 @@ namespace Server
         /// </summary>
         public void Start()
         {
-            TcpListener l = new TcpListener(new IPAddress(new byte[] {127, 0, 0, 1}), port);
+            TcpListener l = new TcpListener(new IPAddress(new byte[] {127, 0, 0, 1}), _port);
             l.Start();
 
             while (true)

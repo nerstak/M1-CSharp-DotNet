@@ -72,6 +72,7 @@ namespace Server
 
                     if (toSend != null)
                     {
+                        // Send message back to user
                         Net.sendMsg(comm.GetStream(), toSend);
                     }
                 }
