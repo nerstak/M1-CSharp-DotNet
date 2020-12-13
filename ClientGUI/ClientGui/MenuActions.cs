@@ -1,6 +1,6 @@
 ﻿using System;
-using Communication.utils;
 using Communication.model;
+using Communication.utils;
 
 namespace ClientGui
 {
@@ -10,7 +10,7 @@ namespace ClientGui
     public class MenuActions
     {
         private CustomPacket _customPacket;
-        
+
 
         /// <summary>
         /// Get information message data
@@ -25,6 +25,7 @@ namespace ClientGui
 
             return null;
         }
+
         public delegate CustomPacket PacketCreation(User user);
 
         /// <summary>
@@ -55,7 +56,7 @@ namespace ClientGui
                 message = "Connection failed";
                 Console.Out.WriteLine("Error: " + e);
             }
-            
+
             return false;
         }
 
@@ -63,7 +64,7 @@ namespace ClientGui
         {
             return new CustomPacket(Operation.CreateUser, u);
         }
-        
+
         public static CustomPacket LoginUserPacket(User u)
         {
             return new CustomPacket(Operation.LoginUser, u);

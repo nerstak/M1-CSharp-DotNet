@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using ClientText.view;
 using Communication.model;
 
@@ -12,10 +11,9 @@ namespace ClientText.controller
     /// </summary>
     public class CommandParser
     {
-
-        private static readonly string ERROR_ARGS = "Error in the number of argument";
-        private static readonly string ERROR_UNKNOWN = "This command does not exists";
-        private static readonly string LOGOUT = "Log out";
+        private const string ErrorArgs = "Error in the number of argument";
+        private const string ErrorUnknown = "This command does not exists";
+        private const string InfoLogout = "Log out";
         private string _message;
 
         public string Message => _message;
@@ -58,7 +56,7 @@ namespace ClientText.controller
                 case "/logout":
                     return Logout();
                 default:
-                    _message = ERROR_UNKNOWN;
+                    _message = ErrorUnknown;
                     break;
             }
 
@@ -78,7 +76,7 @@ namespace ClientText.controller
                 return new CustomPacket(op, new Topic(cmd[1]));
             }
 
-            _message = ERROR_ARGS;
+            _message = ErrorArgs;
 
             return null;
         }
@@ -94,7 +92,7 @@ namespace ClientText.controller
             {
                 return new CustomPacket(Operation.ListTopics,null);
             }
-            _message = ERROR_ARGS;
+            _message = ErrorArgs;
 
             return null;
         }
@@ -112,7 +110,7 @@ namespace ClientText.controller
                 User u = new User {Username = cmd[1]};
                 return ParseMessage(cmd, op, u);
             }
-            _message = ERROR_ARGS;
+            _message = ErrorArgs;
 
             return null;
         }
@@ -130,7 +128,7 @@ namespace ClientText.controller
                 Topic t = new Topic(cmd[1]);
                 return ParseMessage(cmd, op, t);
             }
-            _message = ERROR_ARGS;
+            _message = ErrorArgs;
 
             return null;
         }
@@ -161,7 +159,7 @@ namespace ClientText.controller
         private CustomPacket Logout()
         {
             Client.CurrentUser = null;
-            _message = LOGOUT;
+            _message = InfoLogout;
             return null;
         }
     }

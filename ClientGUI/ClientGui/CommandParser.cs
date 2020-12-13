@@ -11,7 +11,6 @@ namespace ClientGui
     /// </summary>
     public class CommandParser
     {
-
         private static readonly string ERROR_ARGS = "Error in the number of argument";
         private static readonly string ERROR_UNKNOWN = "This command does not exists";
         private static readonly string LOGOUT = "Log out";
@@ -27,7 +26,7 @@ namespace ClientGui
         public CustomPacket ParseCommand(string cmd)
         {
             if (String.IsNullOrWhiteSpace(cmd)) return null;
-            
+
             string[] parts = cmd.Split(' ');
             parts[0] = parts[0].ToLower();
             return CreatePacket(parts);
@@ -91,8 +90,9 @@ namespace ClientGui
         {
             if (cmd.Length == 1)
             {
-                return new CustomPacket(Operation.ListTopics,null);
+                return new CustomPacket(Operation.ListTopics, null);
             }
+
             _message = ERROR_ARGS;
 
             return null;
@@ -111,6 +111,7 @@ namespace ClientGui
                 User u = new User {Username = cmd[1]};
                 return ParseMessage(cmd, op, u);
             }
+
             _message = ERROR_ARGS;
 
             return null;
@@ -129,6 +130,7 @@ namespace ClientGui
                 Topic t = new Topic(cmd[1]);
                 return ParseMessage(cmd, op, t);
             }
+
             _message = ERROR_ARGS;
 
             return null;
@@ -145,12 +147,12 @@ namespace ClientGui
         {
             // Recovering message
             List<string> tmp = cmd.ToList();
-            for(var i = 0; i < 2 ;i++)tmp.RemoveAt(0);
-            
+            for (var i = 0; i < 2; i++) tmp.RemoveAt(0);
+
             // Creating message
             Message msg = new Message(string.Join(" ", tmp), new User(ChatWindow.CurrentUser), r);
-            
-            return new CustomPacket(op,msg);
+
+            return new CustomPacket(op, msg);
         }
 
         /// <summary>
