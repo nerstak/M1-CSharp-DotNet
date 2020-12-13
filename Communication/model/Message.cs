@@ -3,7 +3,7 @@
 namespace Communication.model
 {
     /// <summary>
-    /// Message sent from an user to topic or usre
+    /// Message sent from an user to topic or user
     /// </summary>
     [Serializable]
     public class Message: IDataPacket

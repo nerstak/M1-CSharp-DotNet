@@ -5,11 +5,11 @@ using Communication.model;
 namespace Server.model
 {
     /// <summary>
-    /// List all topics, and users connected to themo
+    /// List all topics, and users connected to theme
     /// </summary>
     public class UsersToTopics
     {
-        private readonly Semaphore _semaphore = new Semaphore(1,1);
+        private readonly Semaphore _semaphore = new Semaphore(1, 1);
         private readonly Dictionary<Topic, UserList> _list = new Dictionary<Topic, UserList>();
 
         public Semaphore Semaphore => _semaphore;
@@ -58,7 +58,7 @@ namespace Server.model
         {
             var connectTopic = SearchTopic(t);
 
-            if(connectTopic?.SearchUser(u.Username) != null)
+            if (connectTopic?.SearchUser(u.Username) != null)
             {
                 return true;
             }

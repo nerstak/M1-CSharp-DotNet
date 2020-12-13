@@ -13,7 +13,7 @@ namespace Server
         {
             var u = (User) customPacket.Data;
             Server.AllUsers.Semaphore.WaitOne();
-            
+
             // We add the user if it does not already exists
             if (Server.AllUsers.SearchUser(u) == null)
             {
@@ -49,7 +49,7 @@ namespace Server
                     Server.ConnectedUsers.Semaphore.WaitOne();
                     Server.ConnectedUsers.AddUser(u);
                     _user = u;
-                    Server.TcpClients.Add(_user,comm);
+                    Server.TcpClients.Add(_user, comm);
                     Server.ConnectedUsers.Semaphore.Release();
                     Connecting();
                     return new CustomPacket(Operation.Reception, new InformationMessage("Connected"));
@@ -61,8 +61,8 @@ namespace Server
             {
                 errorMessage = "Wrong credentials";
             }
-            
-            
+
+
             return new CustomPacket(Operation.Refused, new InformationMessage(errorMessage));
         }
     }

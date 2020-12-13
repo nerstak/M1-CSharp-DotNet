@@ -16,7 +16,7 @@ namespace Server
             Server.TopicList.Semaphore.WaitOne();
             if (Server.TopicList.SearchTopic(t) == null)
             {
-                Server.TopicList.List.Add(t,new UserList());
+                Server.TopicList.List.Add(t, new UserList());
                 Server.TopicList.Semaphore.Release();
                 return new CustomPacket(Operation.Reception, new InformationMessage("Topic created"));
             }
@@ -47,7 +47,7 @@ namespace Server
             Operation op = Operation.Reception;
             string message = "Added to topic " + (Topic) customPacket.Data;
             var topicList = Server.TopicList.SearchTopic((Topic) customPacket.Data);
-            
+
             // We check if the topic exist
             if (topicList != null)
             {
@@ -67,10 +67,10 @@ namespace Server
                 op = Operation.Refused;
                 message = (Topic) customPacket.Data + " does not exists";
             }
-            
+
             return new CustomPacket(op, new InformationMessage(message));
         }
-        
+
         /// <summary>
         /// Leave a topic
         /// </summary>
@@ -81,7 +81,7 @@ namespace Server
             Operation op = Operation.Reception;
             string message = "Disconnected from topic " + (Topic) customPacket.Data;
             var topicList = Server.TopicList.SearchTopic((Topic) customPacket.Data);
-            
+
             // We check if the topic exist
             if (topicList != null)
             {
@@ -101,7 +101,7 @@ namespace Server
                 op = Operation.Refused;
                 message = (Topic) customPacket.Data + " does not exists";
             }
-            
+
             return new CustomPacket(op, new InformationMessage(message));
         }
     }

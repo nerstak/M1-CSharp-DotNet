@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ClientText.view;
+using ClientGUI;
 using Communication.model;
 
-namespace ClientText.controller
+namespace ClientGui
 {
     /// <summary>
     /// Parse a command
     /// </summary>
     public class CommandParser
     {
-        private const string ErrorArgs = "Error in the number of argument";
-        private const string ErrorUnknown = "This command does not exists";
-        private const string InfoLogout = "Log out";
+        private static readonly string ERROR_ARGS = "Error in the number of argument";
+        private static readonly string ERROR_UNKNOWN = "This command does not exists";
+        private static readonly string LOGOUT = "Log out";
         private string _message;
 
         public string Message => _message;
@@ -26,8 +26,8 @@ namespace ClientText.controller
         public CustomPacket ParseCommand(string cmd)
         {
             if (String.IsNullOrWhiteSpace(cmd)) return null;
-            
-            string[] parts = cmd.Split(" ");
+
+            string[] parts = cmd.Split(' ');
             parts[0] = parts[0].ToLower();
             return CreatePacket(parts);
         }
@@ -56,7 +56,7 @@ namespace ClientText.controller
                 case "/logout":
                     return Logout();
                 default:
-                    _message = ErrorUnknown;
+                    _message = ERROR_UNKNOWN;
                     break;
             }
 
@@ -76,7 +76,7 @@ namespace ClientText.controller
                 return new CustomPacket(op, new Topic(cmd[1]));
             }
 
-            _message = ErrorArgs;
+            _message = ERROR_ARGS;
 
             return null;
         }
@@ -90,9 +90,10 @@ namespace ClientText.controller
         {
             if (cmd.Length == 1)
             {
-                return new CustomPacket(Operation.ListTopics,null);
+                return new CustomPacket(Operation.ListTopics, null);
             }
-            _message = ErrorArgs;
+
+            _message = ERROR_ARGS;
 
             return null;
         }
@@ -110,7 +111,8 @@ namespace ClientText.controller
                 User u = new User {Username = cmd[1]};
                 return ParseMessage(cmd, op, u);
             }
-            _message = ErrorArgs;
+
+            _message = ERROR_ARGS;
 
             return null;
         }
@@ -128,7 +130,8 @@ namespace ClientText.controller
                 Topic t = new Topic(cmd[1]);
                 return ParseMessage(cmd, op, t);
             }
-            _message = ErrorArgs;
+
+            _message = ERROR_ARGS;
 
             return null;
         }
@@ -144,12 +147,12 @@ namespace ClientText.controller
         {
             // Recovering message
             List<string> tmp = cmd.ToList();
-            for(var i = 0; i < 2 ;i++)tmp.RemoveAt(0);
-            
+            for (var i = 0; i < 2; i++) tmp.RemoveAt(0);
+
             // Creating message
-            Message msg = new Message(string.Join(" ", tmp), new User(Client.CurrentUser), r);
-            
-            return new CustomPacket(op,msg);
+            Message msg = new Message(string.Join(" ", tmp), new User(ChatWindow.CurrentUser), r);
+
+            return new CustomPacket(op, msg);
         }
 
         /// <summary>
@@ -158,8 +161,8 @@ namespace ClientText.controller
         /// <returns>Null</returns>
         private CustomPacket Logout()
         {
-            Client.CurrentUser = null;
-            _message = InfoLogout;
+            ChatWindow.CurrentUser = null;
+            _message = LOGOUT;
             return null;
         }
     }

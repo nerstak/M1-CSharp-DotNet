@@ -12,9 +12,9 @@ namespace Server.model
     public class UserList
     {
         private List<User> _users;
-        private readonly Semaphore _semaphore = new Semaphore(1,1);
+        private readonly Semaphore _semaphore = new Semaphore(1, 1);
         private readonly string _filePath = string.Empty;
-        
+
         public UserList()
         {
             _users = new List<User>();
@@ -59,7 +59,7 @@ namespace Server.model
             if (!_users.Contains(u))
             {
                 _users.Add(u);
-                
+
                 // Auto saving to file
                 if (!string.IsNullOrWhiteSpace(_filePath))
                 {
@@ -94,7 +94,7 @@ namespace Server.model
         {
             FileStreamer<User>.BinSave(_users, file);
         }
-        
+
         /// <summary>
         /// Load list of user from file
         /// </summary>
@@ -114,7 +114,6 @@ namespace Server.model
                 FileStreamer<User>.CreateFile(file);
                 Console.Out.WriteLine(e);
             }
-            
         }
 
         /// <summary>
