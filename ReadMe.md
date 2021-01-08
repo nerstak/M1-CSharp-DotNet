@@ -60,10 +60,26 @@ If other projects don't recognize them directly, add the NetCore library to Clie
 
 ## Usage
 
-Presaved users:
+### Presaved users:
 
 - admin / admin
 
 - julia / julia
 
 - jean / jean
+
+### Commands
+
+- `/join-topic nameTopic` Join nameTopic
+
+- `/leave-topic nameTopic` Leave  nameTopic
+
+- `list-topic` List topics on the server
+
+- `/create-topic nameTopic` Create nameTopic
+
+- `/pm nameUser message` Send message to nameUser
+
+- `/tell nameTopic message` Send message to nameTopic
+
+- `/logout` Logout
